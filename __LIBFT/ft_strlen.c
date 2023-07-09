@@ -1,36 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/17 20:49:56 by asaber            #+#    #+#             */
-/*   Updated: 2023/06/21 15:34:53 by asaber           ###   ########.fr       */
+/*   Created: 2023/06/10 19:44:13 by asaber            #+#    #+#             */
+/*   Updated: 2023/06/17 20:28:54 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
-void	__pwd(t_env *env)
+size_t	ft_strlen(const char *c)
 {
-	pid_t	pid;
+	int	i;
 
-	pid = fork();
-	if (pid < 0)
+	i = 0;
+	while (c[i] != '\0')
 	{
-		printf("FORK FAILED IN PWD\n");
-		exit(1);
+		i++;
 	}
-	if (pid == 0)
-	{
-		while (env)
-		{
-			if (ft_strncmp(env->variable, "PWD", 3) == 0)
-			{
-				printf("%s\n", env->value);
-			}
-			env = env->next;
-		}
-	}
+	return (i);
 }

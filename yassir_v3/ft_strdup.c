@@ -1,36 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/17 20:49:56 by asaber            #+#    #+#             */
-/*   Updated: 2023/06/21 15:34:53 by asaber           ###   ########.fr       */
+/*   Created: 2022/10/03 19:24:51 by ylaaross          #+#    #+#             */
+/*   Updated: 2023/07/08 22:14:58 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
+#include<stdlib.h>
 
-void	__pwd(t_env *env)
+
+char	*ft_strdup(char *s1)
 {
-	pid_t	pid;
+	size_t	i;
+	size_t	size_s1;
+	char	*p;
 
-	pid = fork();
-	if (pid < 0)
+	p = 0;
+	i = 0;
+	size_s1 = ft_strlen(s1);
+	p = malloc((size_s1 * sizeof(char)) + 1);
+	if (p == 0)
+		return (0);
+	while (s1[i])
 	{
-		printf("FORK FAILED IN PWD\n");
-		exit(1);
+		p[i] = s1[i];
+		i++;
 	}
-	if (pid == 0)
-	{
-		while (env)
-		{
-			if (ft_strncmp(env->variable, "PWD", 3) == 0)
-			{
-				printf("%s\n", env->value);
-			}
-			env = env->next;
-		}
-	}
+	p[i] = 0;
+	free(s1);
+	return (p);
 }

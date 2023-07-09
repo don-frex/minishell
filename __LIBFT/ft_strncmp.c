@@ -1,36 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/17 20:49:56 by asaber            #+#    #+#             */
-/*   Updated: 2023/06/21 15:34:53 by asaber           ###   ########.fr       */
+/*   Created: 2022/10/02 13:30:34 by asaber            #+#    #+#             */
+/*   Updated: 2022/10/25 11:27:12 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include <stdio.h>
+#include "libft.h"
 
-void	__pwd(t_env *env)
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	pid_t	pid;
+	unsigned char	*ptrs1;
+	unsigned char	*ptrs2;
+	size_t			i;
 
-	pid = fork();
-	if (pid < 0)
+	ptrs1 = (unsigned char *)s1;
+	ptrs2 = (unsigned char *)s2;
+	i = 0;
+	while ((ptrs1[i] || ptrs2[i]) && i < n)
 	{
-		printf("FORK FAILED IN PWD\n");
-		exit(1);
+		if (ptrs1[i] != ptrs2[i])
+			return (ptrs1[i] - ptrs2[i]);
+		i++;
 	}
-	if (pid == 0)
-	{
-		while (env)
-		{
-			if (ft_strncmp(env->variable, "PWD", 3) == 0)
-			{
-				printf("%s\n", env->value);
-			}
-			env = env->next;
-		}
-	}
+	return (0);
 }

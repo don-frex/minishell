@@ -1,36 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ../minishell                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/17 20:26:02 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/08 22:49:55 by asaber           ###   ########.fr       */
+/*   Created: 2023/06/09 19:46:25 by ylaaross          #+#    #+#             */
+/*   Updated: 2023/07/08 22:09:20 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
-# include "libft/libft.h"
-# include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <sys/types.h>
 
-typedef struct env
-{
-	char		*variable;
-	char		*value;
-	struct env	*next;
-}	t_env;
-
-typedef struct s_shell
-{
-	t_env	*env;
-}	t_shell;
 typedef struct command_devide
 {
 	char				*content;
@@ -53,6 +35,13 @@ typedef struct parsed_command
 	struct parsed_command	*next;
 	t_file	*file;
 }t_pcommand_d;
+
+typedef struct env
+{
+	char		*variable;
+	char		*value;
+	struct env	*next;
+}	t_env;
 
 t_env	*__fill_env(char **env);
 int		test(t_command_d	*t);
@@ -88,17 +77,3 @@ enum token{
 	TAB = 15,
 	EXIT_STATUS =16,
 };	
-void	_ft_lstadd_back(t_env **lst, t_env *new);
-char	*cut_first(char *env);
-char	*cut_secound(char *env, char *first_env);
-t_env	*_ft_lstnew(void *variable, void *value);
-size_t	ft_strlen(const char *c);
-t_env	*__fill_env(char **env);
-char	**convert_list(void);
-void	__export(char *str);
-int		do_command(char **command);
-void	__pwd(t_env *env);
-void	__env(t_env *env);
-
-t_shell		Glob;
-#endif
