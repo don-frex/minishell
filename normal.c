@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:28:49 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/09 17:32:51 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/09 22:56:27 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,14 @@ char	*search_env(char *var)
 		env = env->next;
 	}
 	return(NULL);
+}
+
+void ifpip(char **command)
+{
+	//if command has pipe in it then do this
+	// int		id;
+	// int		fd[2];
+	// char	**
 }
 
 int	do_command(char **command)

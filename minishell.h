@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:26:02 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/08 22:49:55 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/09 22:36:40 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ t_env	*__fill_env(char **env);
 char	**convert_list(void);
 void	__export(char *str);
 int		do_command(char **command);
+int		check_builts(char *command);
+void	do_builtins(char **command);
 void	__pwd(t_env *env);
 void	__env(t_env *env);
 

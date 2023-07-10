@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 16:43:57 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/07/09 17:51:09 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/09 22:54:47 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -610,28 +610,33 @@ int		main(int argc, char* argv[], char* envp[])
 		expend(t, enva);
 		expend_exit(t, exit_p);
 		parse_200(t, &p);
-		// int i;
-		// while (p)
-		// {
+		int i;
+		while (p)
+		{
 			
-		// 	i = 0;
-		// 	printf("--------------cmd-------------\n");
-		// 	while (p->command[i])
-		// 	{
-		// 		printf("||%s||\n",p->command[i]);
-		// 		i++;	
-		// 	}
-		// 	printf("--------------file-------------\n");	
-		// 		while(p->file)
-		// 		{
-		// 			printf("%s    %d\n",p->file->file_name,p->file->type);
-		// 			p->file= p->file->next;	
-		// 		}
-		// 	printf("--------------next cmd-------------\n");	
-		// 	p = p->next;
-		// }
-		do_command(p->command);
+			i = 0;
+			printf("--------------cmd-------------\n");
+			while (p->command[i])
+			{
+				printf("||%s||\n",p->command[i]);
+				i++;	
+			}
+			printf("--------------file-------------\n");	
+				while(p->file)
+				{
+					printf("%s    %d\n",p->file->file_name,p->file->type);
+					p->file= p->file->next;	
+				}
+			printf("--------------next cmd-------------\n");	
+			p = p->next;
 		}
+
+		if (check_builts(p->command[0]))
+			do_builtins(p->command);
+		else
+			do_command(p->command);
+		}
+	}
 	}
 	return (0);
 }
