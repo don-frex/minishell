@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 16:43:57 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/07/09 22:54:47 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/10 23:46:45 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,13 @@
 #include<readline/readline.h>
 #include<readline/history.h>
 #include "minishell.h"
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<readline/readline.h>
+#include<readline/history.h>
+#include "minishell.h"
 
-	// WORD = 1,
-	// SPACE = 2,
-	// ENV = 3,
-	// PIPE = 4,
-	// QUOTES = 5,
-	// SQUOTES = 6,
-	// APPEND = 7,
-	// REDIRECT = 8,
-	// VARIABLE = 9,
-	// GENERALE = 10,
-	// SDQUOTES = 11,
-	// SSQUOTES = 12,
-	// HERDOCK = 13,
-	// REDIRECT_IN = 14,
 int count(t_command_d	*t, int search)
 {
 	int i;
@@ -42,7 +34,7 @@ int count(t_command_d	*t, int search)
 			i++;
 		t = t->next;
 	}
-	if(i == 1)
+	if(i >= 1)
 		return (1);
 	return(0);
 }
@@ -121,9 +113,20 @@ int ft_strlen_m(char *p, int i, int *v)
 	b = 0;
 	counter = 0;
 	
-	if(p[i] == '"' || p[i] == '|' || p[i] == '\'' || p[i] == ' '|| p[i] == '<' || p[i] == '>' || p[i] == 9 || p[i] == 11 || (p[i] == '$'  && (p[i + 1] && (!(p[i + 1] >= '0' && p[i + 1] <= '9') && p[i + 1] != '@' && p[i + 1] != '$' && p[i + 1] != '?'))))
+	if(p[i] == '"' || p[i] == '|' || p[i] == '\'' || p[i] == ' '|| p[i] == '<' || p[i] == '>' || p[i] == 9 || p[i] == 11 || 
+	
+	(p[i] == '$' && (p[i + 1] && (ft_isalpha(p[i + 1]) || p[i + 1] == '_')))
+	)
+	
+	
+	// (p[i] == '$'  && (p[i + 1] && (!(p[i + 1] >= '0' && p[i + 1] <= '9') && p[i + 1] != '@' && p[i + 1] != '^' && p[i + 1] != '/' && p[i + 1] != '=' && p[i + 1] != '+' && p[i + 1] != '*'
+	// && p[i + 1] != '-' && p[i + 1] != '$' && p[i + 1] != '?')))
+	
+	
+	
+	
+
 	{
-		
 		 if(p[i] == '|')
 			*v = PIPE;
 		else if(p[i] == ' ')
@@ -159,10 +162,9 @@ int ft_strlen_m(char *p, int i, int *v)
 		}
 		else if (p[i] == '$' && (p[i + 1] && !(p[i + 1] >= '0' && p[i + 1] <= '9')))
 		{
-			printf("ssss");
 			i++;
 			counter++;
-			while(p[i] && !(p[i] == '$' ||p[i] == '"' ||p[i] == '|' || p[i] == '<' || p[i] == '>' || p[i] == '\'' || p[i] == ' ' || p[i] == '@'))
+			while(p[i] && (ft_isalnum(p[i]) || p[i]=='_'))
 			{
 				counter++;
 				i++;
@@ -177,10 +179,13 @@ int ft_strlen_m(char *p, int i, int *v)
 		*v = EXIT_STATUS;
 		return (2);
 	}
-	while (p[i] && !(p[i] == '"' ||p[i] == '|' || p[i] == '<' || p[i] == '>' || p[i] == '\'' || p[i] == ' ' || p[i] == 9 || p[i] == 11))
+	if(p[i] == '$')
 	{
-		if((p[i] == '$' && (p[i + 1] && !(p[i + 1] >= '0' && p[i + 1] <= '9')  && p[i + 1] != '$')))
-			return(counter);
+		*v = WORD;
+		return (2);
+	}
+	while (p[i] && !(p[i] == '"' ||p[i] == '|' || p[i] == '<' || p[i] == '>' || p[i] == '\'' || p[i] == ' ' || p[i] == 9 || p[i] == 11 || p[i] == '$'))
+	{
 		*v = WORD;
 		counter++;
 		i++;
@@ -360,12 +365,16 @@ int pipe_red_test(t_command_d	*t, int SEARCH, int *exit_s)
 	}
 	while (t)
 	{
-		if ((t->token == QUOTES || t->token == SQUOTES ||t->token == WORD) && ex_word == 0)
+		// if(existing_pipe >= 1 && test(t))
+		// {
+		// 	*exit_s = 258;
+		// 	return(0);
+		// }
+		if ((t->token == QUOTES || t->token == SQUOTES || t->token == WORD || t->token == VARIABLE) && ex_word == 0)
 			increment_init(&existing_pipe, &ex_word, &b_pipe);
 		else if(t->token == SEARCH && t->state != SDQUOTES && t->state != SSQUOTES ) 
 		{
 			existing_pipe = 1;
-			printf("%d",t->state);
 			ex_word = 0;
 			b_pipe--;
 		}
@@ -418,7 +427,7 @@ int herdock_redirect_test(t_command_d	*t ,int search,int *exit_s)
 	int		pos;
 	int 	h_pos;
 	int		c_red_herdock;
-		// printf("noo");
+	
 	pos = 0;
 	c_red_herdock = count(t, search);
 	ex_word = 0;
@@ -427,46 +436,26 @@ int herdock_redirect_test(t_command_d	*t ,int search,int *exit_s)
 	h_pos = herdock_pos(t, search);
 	if(c_red_herdock == 0)
 	{
-		// printf("|MATGOLHACHE %d|",search); 
 		*exit_s = 0;
 		return(1);
 	}
 	while (t)
 	{
 		
-	// if(b_herdock == 1 && test(t))
-	// {
 		
-	// 	*exit_s = 258;
-	// 	return(0);
-	// }
-	// else if (h_pos < pos && (t->token == WORD || t->token == QUOTES || t->token == SQUOTES) && ex_word == 0 )
-	// {
-	// 	*exit_s = 0;
-	// 	return(1);
-	// }
-	// 	pos++;
 		if(b_herdock >= 1 && test(t))
 		{
 			*exit_s = 258;
 			return(0);
 		}
-		else if(t->token == search && t->state == GENERALE)
-		{
-			
+		if(t->token == search && t->state == GENERALE)
 			b_herdock++;
-			printf("-%d-\n",b_herdock);
-		}
-		else if((t->token == QUOTES || t->token == SQUOTES ||t->token == WORD)&& b_herdock >= 1) 	
-		{
+		if((t->token == QUOTES || t->token == SQUOTES ||t->token == WORD || t->token == VARIABLE)&& b_herdock >= 1) 	
 			b_herdock--;
-			printf("-%d-\n",b_herdock);
-		}
 		t = t->next;
 	}
-	if(b_herdock ==0)
+	if(b_herdock == 0)
 	{
-	
 		*exit_s = 0;
 		return(1);
 	}
@@ -541,7 +530,10 @@ void	expend(t_command_d	*t, t_env	*enva)
 		{
 			s = find(t, enva);
 			if(s)
-				t->content = ft_strdup(find(t, enva));
+			{
+				free(t->content);
+				t->content = ft_strdup(s);
+			}
 			else
 			{
 				free(t->content);
@@ -615,7 +607,7 @@ int		main(int argc, char* argv[], char* envp[])
 		{
 			
 			i = 0;
-			printf("--------------cmd-------------\n");
+			printf("--------------cmd--------------\n");
 			while (p->command[i])
 			{
 				printf("||%s||\n",p->command[i]);
@@ -627,16 +619,15 @@ int		main(int argc, char* argv[], char* envp[])
 					printf("%s    %d\n",p->file->file_name,p->file->type);
 					p->file= p->file->next;	
 				}
-			printf("--------------next cmd-------------\n");	
+			printf("--------------next cmd---------\n");	
 			p = p->next;
 		}
-
-		if (check_builts(p->command[0]))
-			do_builtins(p->command);
-		else
-			do_command(p->command);
+		
+			// if (check_builts(p->command[0]))
+			// 	do_builtins(p->command);
+			// else
+			// 	do_command(p->command);
 		}
-	}
 	}
 	return (0);
 }
