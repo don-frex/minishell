@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 23:07:21 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/13 01:17:40 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/13 15:56:52 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ int	redirection(t_pcommand_d *t)
 		if (fd == -1)
 		{
 			printf("minishell: %s: %s\n", file->file_name, strerror(errno));
-			close(fd);
-			printf("fd: %d\n", fd);
 			return (fd);
 		}
 		file = file->next;

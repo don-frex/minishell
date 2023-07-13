@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:26:02 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/12 23:35:29 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/13 19:03:25 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ typedef struct file
 typedef struct parsed_command
 {
         char                                    **command;
-        int                                             exit_status;
+        int                                     exit_status;
         struct parsed_command   *next;
         t_file  *file;
 }t_pcommand_d;
@@ -105,6 +105,7 @@ int		check_builts(char *command);
 void    do_builtins(char **command);
 void    __pwd(t_env *env);
 void    __env(t_env *env);
+char	*get_next_line(int fd);
 
 t_shell         Glob;
 #endif
