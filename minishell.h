@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:26:02 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/10 23:38:29 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/12 23:35:29 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include <readline/history.h>
 # include <sys/types.h>
 # include <fcntl.h>
+# include <errno.h>
+# include <string.h>
 
 typedef struct env
 {
@@ -97,8 +99,9 @@ size_t  ft_strlen(const char *c);
 t_env   *__fill_env(char **env);
 char    **convert_list(void);
 void    __export(char *str);
-int             do_command(char **command);
-int             check_builts(char *command);
+int		do_command(t_pcommand_d *cmd);
+int		redirection(t_pcommand_d *t);
+int		check_builts(char *command);
 void    do_builtins(char **command);
 void    __pwd(t_env *env);
 void    __env(t_env *env);
