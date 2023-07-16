@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 19:00:18 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/10 22:54:18 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/15 22:10:35 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,38 @@ int	check_str_is_alone(char *str)
 	return (0);
 }
 
-void	__export(char *str)
+int	command_len(char **command)
 {
-	int	start;
+	int i;
 
-	if ((start = check_str_is_alone(str)))
-		add_global(str, start, ft_strlen(str));
-	else
+	i = 0;
+	while (command[i])
+	{
+		i++;
+	}
+	return (i);
+}
+
+void	__export(t_pcommand_d *cmd)
+{
+	int	i;
+	int	j;
+	int	len;
+
+	i = 1;
+	len = command_len(cmd->command);
+	if (len == 1)
 		export_alone();
+	else
+	{
+		while (cmd->command[i])
+		{
+			j = check_str_is_alone(cmd->command[i]);
+			if (j)
+				add_global(cmd->command[i], 0, j - 1);
+			else
+				add_global(cmd->command[i], 0, ft_strlen(cmd->command[i]) - 1);
+			i++;
+		}
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:28:49 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/13 19:05:11 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/16 21:51:53 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,6 @@ int	do_command(t_pcommand_d *cmd)
 	check = 0;
 	if (id == 0)
 	{
-		printf("command: %s\n", cmd->command[0]);
 		if (cmd->file)
 			check = redirect(cmd);
 		if (cmd->command[0] && check == 0)

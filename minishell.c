@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 16:43:57 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/07/13 00:51:41 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/16 21:55:14 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -585,12 +585,13 @@ int		main(int argc, char* argv[], char* envp[])
 	(void)argc;
 	(void)argv;
 	Glob.env = __fill_env(envp);
+	
 	while (1)
 	{
 		t = 0;
-		
+		enva = Glob.env;
 		read = readline("minishell> ");
-		enva = __fill_env(envp);
+		
 		if (!read)
 			exit(0);
 		add_history(read);
@@ -628,11 +629,10 @@ int		main(int argc, char* argv[], char* envp[])
 		// 	p = p->next;
 		// }
 			if (check_builts(p->command[0]))
-				do_builtins(p->command);
+				do_builtins(p);
 			else
 				do_command(p);
 		}
 	}
 	return (0);
 }
-

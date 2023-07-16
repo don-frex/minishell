@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:26:02 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/13 19:03:25 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/16 19:32:15 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,14 +98,20 @@ t_env   *_ft_lstnew(void *variable, void *value);
 size_t  ft_strlen(const char *c);
 t_env   *__fill_env(char **env);
 char    **convert_list(void);
-void    __export(char *str);
+void    __export(t_pcommand_d *cmd);
 int		do_command(t_pcommand_d *cmd);
 int		redirection(t_pcommand_d *t);
 int		check_builts(char *command);
-void    do_builtins(char **command);
-void    __pwd(t_env *env);
+void	do_builtins(t_pcommand_d *cmd);
+void	__pwd(t_pcommand_d *cmd);
 void    __env(t_env *env);
+void	__unset(t_pcommand_d *cmd);
 char	*get_next_line(int fd);
+void	ft_echo(t_pcommand_d *t);
+void	ft_cd(t_pcommand_d *t);
+char	*search_env(char *var);
+void	ft_exit(char **command);
+void	rm_node(t_env *env);
 
 t_shell         Glob;
 #endif
