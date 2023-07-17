@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 21:20:44 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/16 20:26:09 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/17 16:20:12 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	isin_env(char *var)
 
 void	find_rm(int posision)
 {
-	t_env *env;
+	t_env	*env;
 	int		i;
 
 	env = Glob.env;
@@ -69,7 +69,7 @@ void	__unset(t_pcommand_d *cmd)
 	i = 1;
 	while (cmd->command[i])
 	{
-		if((posision = isin_env(cmd->command[i])))
+		if ((posision = isin_env(cmd->command[i])))
 			find_rm(posision);
 		i++;
 	}

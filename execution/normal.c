@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:28:49 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/16 21:51:53 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/17 19:36:26 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ char	*search_env(char *var)
 			return (env->value);
 		env = env->next;
 	}
-	return(NULL);
+	return (NULL);
 }
 
 char *check_command(char **path, char *command)
@@ -95,73 +95,47 @@ void	free_command(t_pcommand_d *cmd)
 int	redirect(t_pcommand_d *cmd)
 {
 	int		fd;
-	//char	*line;
-//if type of redirection is '<' do this
-	if (cmd->file->type == 14)
+	while (cmd->file)
 	{
-		fd = open(cmd->file->file_name, O_RDONLY);
-		if (fd == -1)
+		if (cmd->file->type == 14)
 		{
-			printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
-			return (1);
+			fd = open(cmd->file->file_name, O_RDONLY);
+			if (fd == -1)
+			{
+				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
+				return (1);
+			}
+			dup2(fd, 0);
+			cmd->file = cmd->file->next;
 		}
-		dup2(fd, 0);
-		cmd->file = cmd->file->next;
-	}
-// if type of redirection is '>' do this
-	else if (cmd->file->type == 8)
-	{
-		fd = open(cmd->file->file_name, O_RDWR | O_CREAT | O_TRUNC, 0644);
-		if (fd == -1)
+		else if (cmd->file->type == 8)
 		{
-			printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
-			return (1);
+			fd = open(cmd->file->file_name, O_RDWR | O_CREAT | O_TRUNC, 0644);
+			if (fd == -1)
+			{
+				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
+				return (1);
+			}
+			dup2(fd, 1);
+			cmd->file = cmd->file->next;
 		}
-		dup2(fd, 1);
-		cmd->file = cmd->file->next;
-	}
-// if type of redirection is '>>' do this
-	else if (cmd->file->type == 9)
-	{
-		fd = open(cmd->file->file_name, O_RDWR | O_CREAT | O_APPEND, 0644);
-		if (fd == -1)
+		else if (cmd->file->type == 7)
 		{
-			printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
-			return (1);
+			fd = open(cmd->file->file_name, O_RDWR | O_CREAT | O_APPEND, 0644);
+			if (fd == -1)
+			{
+				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
+				return (1);
+			}
+			dup2(fd, 1);
+			cmd->file = cmd->file->next;
 		}
-		dup2(fd, 1);
-		cmd->file = cmd->file->next;
-	}
 
-//if is heardoc do this
-	// else if (cmd->file->type == 10)
-	// {
-	// 	fd = open("tmp", O_RDWR | O_CREAT | O_TRUNC, 0644);
-	// 	if (fd == -1)
-	// 	{
-	// 		printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
-	// 		return (1);
-	// 	}
-	// 	dup2(fd, 1);
-	// 	cmd->file = cmd->file->next;
-	// 	while (cmd->file->type != 11)
-	// 	{
-	// 		printf("> ");
-	// 		get_next_line(0);
-	// 		write(fd, line, ft_strlen(line));
-	// 		write(fd, "\n", 1);
-
-	// 	}
-	// 	close(fd);
-	// 	fd = open("tmp", O_RDONLY);
-	// 	dup2(fd, 0);
-	// 	cmd->file = cmd->file->next;
-	// }
+	//if is 
+		
+	}
 	return (0);
 }
-
-
-
 
 int	do_command(t_pcommand_d *cmd)
 {

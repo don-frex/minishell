@@ -1,22 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/17 16:21:35 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/17 16:21:36 by asaber           ###   ########.fr       */
+/*   Created: 2022/11/04 13:12:38 by asaber            #+#    #+#             */
+/*   Updated: 2023/07/17 22:11:10 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
+
+# include <unistd.h>
+# include <stdlib.h>
 #include "../minishell.h"
 
-void	__env(t_env *env)
-{
-	while (env)
-	{
-		printf("%s=%s\n", env->variable, env->value);
-		env = env->next;
-	}
-}
+char	*get_next_line(int fd);
+int		t_sln(char *str);
+int		t_strchr(char *s, int c);
+char	*t_strjoin(char *str1, char *str2);
+char	*t_substr(char *s, int start, int len);
+char	*t_strdup(char *s1);
+char	*t_calloc(int count, int size);
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 5
+# endif
+
+#endif
