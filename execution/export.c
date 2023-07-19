@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 19:00:18 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/15 22:10:35 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/18 16:53:30 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,11 @@ int	command_len(char **command)
 
 void	__export(t_pcommand_d *cmd)
 {
-	int	i;
-	int	j;
-	int	len;
+	int		i;
+	int		j;
+	int		len;
+	char	*check;
+	char 	*value;
 
 	i = 1;
 	len = command_len(cmd->command);
@@ -87,11 +89,22 @@ void	__export(t_pcommand_d *cmd)
 	{
 		while (cmd->command[i])
 		{
-			j = check_str_is_alone(cmd->command[i]);
-			if (j)
-				add_global(cmd->command[i], 0, j - 1);
+			check = cut_first(cmd->command[i]);
+			if (isin_env(check) == 0)
+			{
+				j = check_str_is_alone(cmd->command[i]);
+				if (j)
+					add_global(cmd->command[i], 0, j - 1);
+				else
+					add_global(cmd->command[i], 0, ft_strlen(cmd->command[i]) - 1);
+			}
 			else
-				add_global(cmd->command[i], 0, ft_strlen(cmd->command[i]) - 1);
+			{
+				value = cut_secound(cmd->command[i], check);
+				__edit_env(check, value);
+				free(value);
+			}
+			free(check);
 			i++;
 		}
 	}

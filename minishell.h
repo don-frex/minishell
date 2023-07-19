@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:26:02 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/16 19:32:15 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/19 20:07:06 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct command_devide
 
 typedef struct file
 {
+		int 					state;
         char            *file_name;
         int                     type;
         struct file *next;
@@ -72,7 +73,7 @@ char    *cut_secound(char *env, char *first_env);
 char    *cut_first(char *env);
 char    *ft_strdup(char *s1);
 void    fifo(t_command_d **head, char* str, int v);
-t_file  *fifo_file(t_file *head, char* str, int v);
+t_file  *fifo_file(t_file *head, char* str, int v, int state);
 enum token{
         WORD = 1,
         SPACE = 2,
@@ -111,7 +112,10 @@ void	ft_echo(t_pcommand_d *t);
 void	ft_cd(t_pcommand_d *t);
 char	*search_env(char *var);
 void	ft_exit(char **command);
+void	__edit_env(char *var, char *value);
+int		isin_env(char *var);
 void	rm_node(t_env *env);
-
+int		isin_env(char *var);
+void	find_rm(int posision);
 t_shell         Glob;
 #endif

@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 19:20:00 by asaber            #+#    #+#             */
-/*   Updated: 2023/06/18 18:24:59 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/18 16:39:13 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,28 @@ char	*cut_secound(char *env, char *first_env)
 	}
 	sec[j] = '\0';
 	return (sec);
+}
+
+
+//if you want edit in the value of each variable you can use this function
+
+void	__edit_env(char *var, char *value)
+{
+	t_env	*env;
+	int		size;
+
+	size = ft_strlen(var);
+	env = Glob.env;
+	while (env)
+	{
+		if (!ft_strncmp(var, env->variable, size))
+		{
+			free(env->value);
+			env->value = ft_strdup(value);
+			break ;
+		}
+		env = env->next;
+	}
 }
 
 t_env	*__fill_env(char **env)

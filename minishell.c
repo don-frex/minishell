@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 16:43:57 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/07/17 19:16:02 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/19 22:57:14 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,34 @@
 #include<readline/readline.h>
 #include<readline/history.h>
 #include "minishell.h"
+
+void	fifo_2(t_command_d **head, char* str, int v,int state)
+{
+	t_command_d	*t;
+
+	t = 0;
+	if (*head == 0)
+	{
+		*head = malloc(sizeof(t_command_d));
+		(*head)->content = ft_strdup(str);
+		(*head)->token = v;
+		(*head)->state = state;
+		// printf("%s--%d--",(*head)->content,state);
+		(*head)->next = 0;
+	}
+	else
+	{
+		t = *head;
+		while (t->next)
+			t = t->next;
+		t->next = malloc(sizeof(t_command_d));
+		t->next->content = ft_strdup(str);
+		t->next->token = v;
+		t->next->state = state;
+		// printf("--%d--",state);
+		t->next->next = 0;
+	}
+}
 
 int count(t_command_d	*t, int search)
 {
@@ -83,6 +111,7 @@ void	fifo(t_command_d **head, char* str, int v)
 		t->next->next = 0;
 	}
 }
+
 void	fifo_cmd(t_pcommand_d **head)
 {
 	t_pcommand_d	*t;
@@ -117,15 +146,6 @@ int ft_strlen_m(char *p, int i, int *v)
 	
 	(p[i] == '$' && (p[i + 1] && (ft_isalpha(p[i + 1]) || p[i + 1] == '_')))
 	)
-	
-	
-	// (p[i] == '$'  && (p[i + 1] && (!(p[i + 1] >= '0' && p[i + 1] <= '9') && p[i + 1] != '@' && p[i + 1] != '^' && p[i + 1] != '/' && p[i + 1] != '=' && p[i + 1] != '+' && p[i + 1] != '*'
-	// && p[i + 1] != '-' && p[i + 1] != '$' && p[i + 1] != '?')))
-	
-	
-	
-	
-
 	{
 		 if(p[i] == '|')
 			*v = PIPE;
@@ -223,6 +243,31 @@ char* split_parse(char *p,t_command_d	**t)
 		
 		fifo(t, s, v);
 		
+	}
+	return(s);
+}
+char* split_parse_2(char *p,t_command_d	**t,int state)
+{
+	int i;
+	char *s;
+	int v;
+	i = 0;
+	while (p[i])
+	{
+		v = 0;
+		s = 0;
+		s = cp(p, ft_strlen_m(p, i, &v), &i);
+		if(v == REDIRECT || v == REDIRECT_IN || v == HERDOCK || v == PIPE || v == APPEND)
+		{
+			
+			fifo_2(t, s, v, SSQUOTES);
+			// printf("%s  %d",s,SSQUOTES);
+		}
+		else
+		{
+			printf("what");
+			fifo_2(t,s, v, state);
+		}
 	}
 	return(s);
 }
@@ -450,7 +495,7 @@ int herdock_redirect_test(t_command_d	*t ,int search,int *exit_s)
 		}
 		if(t->token == search && t->state == GENERALE)
 			b_herdock++;
-		if((t->token == QUOTES || t->token == SQUOTES ||t->token == WORD || t->token == VARIABLE)&& b_herdock >= 1) 	
+		if((t->token == QUOTES || t->token == SQUOTES ||t->token == WORD || t->token == VARIABLE || t->token == EXIT_STATUS)&& b_herdock >= 1) 	
 			b_herdock--;
 		t = t->next;
 	}
@@ -498,7 +543,7 @@ char* find(t_command_d	*t, t_env	*enva)
 	{
 		
 		if(ft_strcmp_(t->content ,enva->variable) == 0)
-			return (enva->value);
+			return (strdup(enva->value));
 		enva = enva->next;	
 	}
 	return(NULL);
@@ -508,26 +553,33 @@ void init_expend(int *previous, int *previoush)
 	*previous = 0;
 	*previoush = 0;
 }
-void	expend(t_command_d	*t, t_env	*enva)
+
+
+
+t_command_d	*	expend(t_command_d	*t, t_env	*enva)
 {
 	char *s;
-	
+	// int	pred;
 	int previoush;
-	int previous ;
+	int previous;
+	t_command_d		*tcp;
+	int 	inside;
 	
+	tcp = 0;
+	int i;
+	i = 0;
 	init_expend(&previous, &previoush);
 	while(t)
 	{
-		if(t->token == HERDOCK)
+		inside = 0;
+		if(t->token == HERDOCK && t->state == GENERALE)
+		{
+			fifo_2(&tcp, t->content, t->token, t->state);
 			previoush = 1;
-		else if(previoush != 0 &&t->token != HERDOCK && (t->state != SDQUOTES || t->state != SSQUOTES))
-		{
-			previous = 1;
 		}
-		else if(t->token == SPACE && (t->state != SDQUOTES || t->state != SSQUOTES) && previous == 1)
-			init_expend(&previous, &previoush);	
-		else if(t->token == VARIABLE && previoush == 0 && (t->state == GENERALE || t->state == SDQUOTES))
+		else if(t->token == VARIABLE && previoush == 0 && (t->state == SDQUOTES))
 		{
+			s = 0;
 			s = find(t, enva);
 			if(s)
 			{
@@ -539,30 +591,72 @@ void	expend(t_command_d	*t, t_env	*enva)
 				free(t->content);
 				t->content = calloc(1, 1);
 			}
+			fifo_2(&tcp, t->content, t->token, SDQUOTES);
 		}
-		t = t->next;
+		else if(t->token == VARIABLE && previoush == 0 && (t->state == GENERALE))
+		{
+			s=0;
+			s = find(t, enva);
+			if(s)
+				split_parse_2(s, &tcp, GENERALE);
+			else
+				fifo_2(&tcp, "", t->token, GENERALE);
+		}
+		else if(previoush == 1)
+		{
+			
+			while(t && ((t->token == TAB && t->state == GENERALE ) || (t->token == SPACE && t->state == GENERALE)))
+			{
+				
+				inside = 1;
+				fifo_2(&tcp, t->content, t->token, t->state);
+				t = t->next;
+			}
+			while(t && (!(t->token == TAB && t->state == GENERALE ) && !(t->token == SPACE && t->state == GENERALE)))
+			{
+				previoush = 0;
+				inside = 1;
+				fifo_2(&tcp, t->content, t->token, t->state);
+				t = t->next;
+			}
+		}
+		else
+			fifo_2(&tcp, t->content, t->token, t->state);
+		i++;
+		if(t && inside == 0)
+			t = t->next;
 	}
+	return (tcp);
 }
 
 void	expend_exit(t_command_d	*t, int exit_s)
 {
 	int previoush;
-	int previous ;
-	
-	init_expend(&previous, &previoush);
+	int inside;
+
+	previoush = 0;
+	// init_expend(&previous, &previoush);
 	while(t)
 	{
-		if(t->token == HERDOCK)
+		inside = 0;
+		if(t->token == HERDOCK && t->state == GENERALE)
 			previoush = 1;
-		else if(previoush != 0 && t->token != HERDOCK && (t->state != SDQUOTES || t->state != SSQUOTES))
+		else if(previoush == 1 && t->token != SPACE && t->token != TAB)
 		{
-			previous = 1;
+			while(t && (!(t->token == SPACE && t->state == GENERALE) && !(t->token == TAB && t->state == GENERALE)))
+			{
+				inside = 1;
+				previoush = 0;
+				t = t->next;
+			}
 		}
-		else if(t->token == SPACE && (t->state != SDQUOTES || t->state != SSQUOTES) && previous == 1)
-			init_expend(&previous, &previoush);	
-		else if(t->token == EXIT_STATUS && previoush == 0 && (t->state == GENERALE || t->state == SDQUOTES))
-				t->content = ft_strdup(ft_itoa(exit_s));
-		t = t->next;
+		else if(previoush == 0 && (t->token == EXIT_STATUS && (t->state == GENERALE || t->state == SDQUOTES)))
+		{
+			free(t->content);
+			t->content = ft_strdup(ft_itoa(exit_s));
+		}
+		if(t && !inside)
+			t = t->next;
 	}
 }
 
@@ -578,20 +672,18 @@ int		main(int argc, char* argv[], char* envp[])
 	char			*read;
 	t_command_d		*t;
 	t_pcommand_d	*p;
-	t_env	* enva;
 	
 	p = 0;
+	exit_p = 0;
 	exit_s = 0;
 	(void)argc;
 	(void)argv;
 	Glob.env = __fill_env(envp);
-	
 	while (1)
 	{
 		t = 0;
-		enva = Glob.env;
-		read = readline("minishell> ");
 		
+		read = readline("minishell> ");\
 		if (!read)
 			exit(0);
 		add_history(read);
@@ -603,11 +695,12 @@ int		main(int argc, char* argv[], char* envp[])
 		herdock_redirect_test(t, REDIRECT_IN, &exit_s) && herdock_redirect_test(t, APPEND, &exit_s) && herdock_redirect_test(t, HERDOCK, &exit_s) && pipe_red_test(t , PIPE,&exit_s))
 		{
 			
-		// printf("	content		|	token	|	state	\n");
-		// printf("	______________________________________________\n");
-		expend(t, enva);
-		expend_exit(t, exit_p);
-		parse_200(t, &p);
+			// printf("	content		|	token	|	state	\n");
+			// printf("	______________________________________________\n");
+			
+			t = expend(t, Glob.env);
+			expend_exit(t, exit_p);
+			parse_200(t, &p);
 		// int i;
 		// while (p)
 		// {
@@ -622,7 +715,7 @@ int		main(int argc, char* argv[], char* envp[])
 		// 	printf("--------------file-------------\n");	
 		// 		while(p->file)
 		// 		{
-		// 			printf("%s    %d\n",p->file->file_name,p->file->type);
+		// 			printf("%s    %d  %d\n",p->file->file_name,p->file->type,p->file->state);
 		// 			p->file= p->file->next;	
 		// 		}
 		// 	printf("--------------next cmd---------\n");	
@@ -632,6 +725,10 @@ int		main(int argc, char* argv[], char* envp[])
 				do_builtins(p);
 			else
 				do_command(p);
+		}
+		else
+		{
+			write(2,"Syntax error\n",13);
 		}
 	}
 	return (0);

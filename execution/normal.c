@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:28:49 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/17 19:36:26 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/19 22:23:41 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,9 +130,7 @@ int	redirect(t_pcommand_d *cmd)
 			dup2(fd, 1);
 			cmd->file = cmd->file->next;
 		}
-
-	//if is 
-		
+	
 	}
 	return (0);
 }
