@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 16:21:35 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/17 16:21:36 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/22 21:09:17 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	__env(t_env *env)
 {
+	if (env == NULL)
+		return ;
 	while (env)
 	{
 		printf("%s=%s\n", env->variable, env->value);

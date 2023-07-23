@@ -6,15 +6,31 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:28:49 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/19 22:23:41 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/22 19:45:12 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	list_len(t_env *env)
+// check if is coomannd in the command
+
+int command_check(t_pcommand_d *cmd)
 {
-	int	i;
+	if (cmd && cmd->command)
+	{
+		while (cmd)
+		{
+			if (cmd->command[0])
+				return (1);
+			cmd = cmd->next;
+		}
+	}
+	return (0);
+}
+
+int list_len(t_env *env)
+{
+	int i;
 
 	i = 0;
 	while (env)
@@ -25,13 +41,13 @@ int	list_len(t_env *env)
 	return (i);
 }
 
-char	**convert_list(void)
+char **convert_list(void)
 {
-	char	**cp_env;
-	char	*tmp_variable;
-	t_env	*env;
-	int		size;
-	int		i;
+	char **cp_env;
+	char *tmp_variable;
+	t_env *env;
+	int size;
+	int i;
 
 	env = Glob.env;
 	size = list_len(env);
@@ -48,10 +64,10 @@ char	**convert_list(void)
 	return (cp_env);
 }
 
-char	*search_env(char *var)
+char *search_env(char *var)
 {
-	t_env	*env;
-	int		size;
+	t_env *env;
+	int size;
 
 	size = ft_strlen(var);
 	env = Glob.env;
@@ -66,8 +82,8 @@ char	*search_env(char *var)
 
 char *check_command(char **path, char *command)
 {
-	int		i;
-	char	*tmp;
+	int i;
+	char *tmp;
 
 	i = 0;
 	while (path[i])
@@ -80,10 +96,12 @@ char *check_command(char **path, char *command)
 	return (NULL);
 }
 
-void	free_command(t_pcommand_d *cmd)
+void free_command(t_pcommand_d *cmd)
 {
-	t_file			*tmp_file;
+	t_file *tmp_file;
 
+	if (cmd && cmd->file)
+	{
 		while (cmd->file)
 		{
 			tmp_file = cmd->file;
@@ -91,10 +109,11 @@ void	free_command(t_pcommand_d *cmd)
 			free(tmp_file->file_name);
 			free(tmp_file);
 		}
+	}
 }
-int	redirect(t_pcommand_d *cmd)
+int redirect(t_pcommand_d *cmd)
 {
-	int		fd;
+	int fd;
 	while (cmd->file)
 	{
 		if (cmd->file->type == 14)
@@ -130,19 +149,32 @@ int	redirect(t_pcommand_d *cmd)
 			dup2(fd, 1);
 			cmd->file = cmd->file->next;
 		}
-	
+		else if (cmd->file->type == 13)
+		{
+			char *path = ft_strjoin("/tmp/", cmd->file->file_name);
+			fd = open(path, O_RDONLY, 0666);
+			if (fd == -1)
+			{
+				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
+				return (1);
+			}
+			dup2(fd, STDIN_FILENO);
+			cmd->file = cmd->file->next;
+		}
 	}
 	return (0);
 }
 
-int	do_command(t_pcommand_d *cmd)
+int do_command(t_pcommand_d *cmd, int *exit_status)
 {
-	int		i;
-	char	**paths;
-	char	**env;
-	int		id;
-	int		check;
+	int i;
+	char **paths;
+	char **env;
+	int id;
+	int check;
 
+	if (!cmd)
+		return (0);
 	paths = ft_split(search_env("PATH"), ':');
 	env = convert_list();
 	i = 0;
@@ -152,16 +184,19 @@ int	do_command(t_pcommand_d *cmd)
 	{
 		if (cmd->file)
 			check = redirect(cmd);
-		if (cmd->command[0] && check == 0)
-		{
-			if (check_command(paths, cmd->command[0]))
-				execve(check_command(paths, cmd->command[0]), cmd->command, env);
-			else
-				printf("minishell>: %s: command not found\n", cmd->command[0]);
+			if (cmd->command[0] && check == 0)
+			{
+				if (check_command(paths, cmd->command[0]))
+					execve(check_command(paths, cmd->command[0]), cmd->command, env);
+				else
+				{
+					printf("minishell>: %s: command not found\n", cmd->command[0]);
+					*exit_status = 127;
+				}
 				cmd = cmd->next;
-		}
-		else
-			exit(EXIT_FAILURE);
+			}
+			else
+				exit(EXIT_FAILURE);
 	}
 	else
 		wait(NULL);

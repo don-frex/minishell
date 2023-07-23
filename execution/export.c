@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 19:00:18 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/18 16:53:30 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/22 21:11:44 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ void	__export(t_pcommand_d *cmd)
 
 	i = 1;
 	len = command_len(cmd->command);
+	if (redirect(cmd) == -1)
+		return ;
 	if (len == 1)
 		export_alone();
 	else

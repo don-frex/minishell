@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 16:43:57 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/07/19 22:57:14 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/23 16:50:42 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,10 +264,7 @@ char* split_parse_2(char *p,t_command_d	**t,int state)
 			// printf("%s  %d",s,SSQUOTES);
 		}
 		else
-		{
-			printf("what");
 			fifo_2(t,s, v, state);
-		}
 	}
 	return(s);
 }
@@ -679,11 +676,13 @@ int		main(int argc, char* argv[], char* envp[])
 	(void)argc;
 	(void)argv;
 	Glob.env = __fill_env(envp);
+	int stdin = dup(STDIN_FILENO);
+	int stdout = dup(STDOUT_FILENO);
 	while (1)
 	{
 		t = 0;
-		
-		read = readline("minishell> ");\
+		p = 0;
+		read = readline("minishell> ");
 		if (!read)
 			exit(0);
 		add_history(read);
@@ -721,10 +720,14 @@ int		main(int argc, char* argv[], char* envp[])
 		// 	printf("--------------next cmd---------\n");	
 		// 	p = p->next;
 		// }
-			if (check_builts(p->command[0]))
-				do_builtins(p);
-			else
-				do_command(p);
+			if (p && heardoc_check(p))
+				do_heardoc(p);
+			if (p && check_builts(p->command[0]))
+				do_builtins(p, &exit_s);
+			else if (p && command_check(p))
+				do_command(p, &exit_s);
+			dup2(stdin, STDIN_FILENO);
+			dup2(stdout, STDOUT_FILENO);
 		}
 		else
 		{
