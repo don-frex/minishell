@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 19:12:39 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/22 23:42:10 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/25 16:52:31 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,12 @@ int	check_builts(char *command)
 	return (0);
 }
 
-void	do_builtins(t_pcommand_d *cmd, int *status)
+void	do_builtins(t_pcommand_d *cmd)
 {
 	if (cmd->command)
 	{
 		if (ft_strncmp(cmd->command[0], "cd", ft_strlen(cmd->command[0])) == 0)
-			ft_cd(cmd, status);
+			ft_cd(cmd);
 		else if (ft_strncmp(cmd->command[0], "echo", ft_strlen(cmd->command[0])) == 0)
 			ft_echo(cmd);
 		else if (ft_strncmp(cmd->command[0], "pwd", ft_strlen(cmd->command[0])) == 0)
@@ -54,6 +54,6 @@ void	do_builtins(t_pcommand_d *cmd, int *status)
 		else if (ft_strncmp(cmd->command[0], "env", ft_strlen(cmd->command[0])) == 0)
 			__env(Glob.env);
 		else if (ft_strncmp(cmd->command[0], "exit", ft_strlen(cmd->command[0])) == 0)
-			ft_exit(cmd->command, status);
+			ft_exit(cmd->command);
 	}
 }

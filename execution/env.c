@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 16:21:35 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/22 21:09:17 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/26 22:27:17 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,11 @@ void	__env(t_env *env)
 		return ;
 	while (env)
 	{
-		printf("%s=%s\n", env->variable, env->value);
+		//printf("%s=%s\n", env->variable, env->value);
+		ft_putstr_fd(env->variable, 1);
+		ft_putstr_fd("=", 1);
+		ft_putstr_fd(env->value, 1);
+		ft_putstr_fd("\n", 1);
 		env = env->next;
 	}
 }

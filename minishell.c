@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 16:43:57 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/07/23 16:50:42 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/26 21:39:58 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -719,15 +719,14 @@ int		main(int argc, char* argv[], char* envp[])
 		// 		}
 		// 	printf("--------------next cmd---------\n");	
 		// 	p = p->next;
-		// }
+		//}
+
 			if (p && heardoc_check(p))
 				do_heardoc(p);
-			if (p && check_builts(p->command[0]))
-				do_builtins(p, &exit_s);
 			else if (p && command_check(p))
 				do_command(p, &exit_s);
-			dup2(stdin, STDIN_FILENO);
-			dup2(stdout, STDOUT_FILENO);
+			 dup2(stdin, STDIN_FILENO);
+			 dup2(stdout, STDOUT_FILENO);
 		}
 		else
 		{

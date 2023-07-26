@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 22:21:06 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/22 16:07:44 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/25 16:37:57 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,12 @@ int	do_heardoc(t_pcommand_d *cmd)
 	int		fd;
 	char	*line;
 	char	*path;
+	//char	**ends;
 
 	//while (heardoc_check(che))
 	path = ft_strjoin("/tmp/", cmd->file->file_name);
 	fd = open(path, O_CREAT | O_RDWR | O_TRUNC, 0666);
+	
 	if (fd == -1)
 	{
 		printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));

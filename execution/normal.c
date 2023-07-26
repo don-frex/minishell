@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:28:49 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/22 19:45:12 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/26 22:53:42 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,39 +167,65 @@ int redirect(t_pcommand_d *cmd)
 
 int do_command(t_pcommand_d *cmd, int *exit_status)
 {
-	int i;
+	(void)exit_status;
+	int id;
+	int fd[2];
 	char **paths;
 	char **env;
-	int id;
 	int check;
+	int input;
 
 	if (!cmd)
-		return (0);
+		return 0;
 	paths = ft_split(search_env("PATH"), ':');
 	env = convert_list();
-	i = 0;
-	id = fork();
 	check = 0;
-	if (id == 0)
+	input = 0;
+	while (cmd)
 	{
-		if (cmd->file)
-			check = redirect(cmd);
-			if (cmd->command[0] && check == 0)
+		pipe(fd);
+			id = fork();
+			if (id == 0)
 			{
-				if (check_command(paths, cmd->command[0]))
-					execve(check_command(paths, cmd->command[0]), cmd->command, env);
-				else
+				if (!check_builts(cmd->command[0]))
+					dup2(input, 0);
+				if (cmd->next)
 				{
-					printf("minishell>: %s: command not found\n", cmd->command[0]);
-					*exit_status = 127;
+					dup2(fd[1], 1);
+					close(fd[1]);
+					close(fd[0]);
 				}
-				cmd = cmd->next;
+				if (cmd->file)
+					check = redirect(cmd);
+				if (cmd->command[0] && check == 0)
+				{
+					if (check_builts(cmd->command[0]))
+					{
+						do_builtins(cmd);
+						exit(0);
+					}
+					else if (check_command(paths, cmd->command[0]))
+						execve(check_command(paths, cmd->command[0]), cmd->command, env);
+					else
+					{
+						printf("minishell>: %s: command not found\n", cmd->command[0]);
+						*exit_status = 127;
+						exit(127);
+					}
+				}
+				else
+					exit(EXIT_FAILURE);
 			}
 			else
-				exit(EXIT_FAILURE);
+			{
+				close(fd[1]);
+				input = fd[0];
+				if (!input)
+					close(input);
+				wait(NULL);
+			}
+		cmd = cmd->next;
 	}
-	else
-		wait(NULL);
 	free_command(cmd);
 	return (0);
 }

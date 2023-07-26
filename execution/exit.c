@@ -6,19 +6,19 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 17:43:12 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/22 23:45:17 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/25 16:48:35 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_exit(char **command, int *status)
+void	ft_exit(char **command)
 {
 	int	i;
 
 	i = 0;
 	if (command[1] == NULL)
-		exit(*status);
+		exit(0);
 	else if (command[1] != NULL && command[2] == NULL)
 	{
 		while (command[1][i])

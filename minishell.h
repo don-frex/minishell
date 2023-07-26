@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:26:02 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/23 16:43:20 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/25 16:52:08 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,15 +104,15 @@ void    __export(t_pcommand_d *cmd);
 int		do_command(t_pcommand_d *cmd, int *exit_status);
 //int		redirection(t_pcommand_d *t);
 int		check_builts(char *command);
-void	do_builtins(t_pcommand_d *cmd, int *exit_status);
+void	do_builtins(t_pcommand_d *cmd);
 void	__pwd(t_pcommand_d *cmd);
 void    __env(t_env *env);
 void	__unset(t_pcommand_d *cmd);
 char	*get_next_line(int fd);
 void	ft_echo(t_pcommand_d *t);
-void	ft_cd(t_pcommand_d *t, int *exit_status);
+void	ft_cd(t_pcommand_d *t);
 char	*search_env(char *var);
-void	ft_exit(char **command, int *exit_status);
+void	ft_exit(char **command);
 void	__edit_env(char *var, char *value);
 int		isin_env(char *var);
 void	rm_node(t_env *env);
@@ -122,5 +122,5 @@ int		heardoc_check(t_pcommand_d *cmd);
 int		do_heardoc(t_pcommand_d *cmd);
 int		command_check(t_pcommand_d *cmd);
 int 	redirect(t_pcommand_d *cmd);
-t_shell         Glob;
+t_shell	Glob;
 #endif

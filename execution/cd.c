@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 17:34:20 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/22 23:32:42 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/25 16:51:51 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,17 @@
 
 // glob env is a global variable in this case
 
-int	home_error(t_pcommand_d *cmd, int *status)
+int	home_error(t_pcommand_d *cmd)
 {
 	if (ft_strlen(cmd->command[1]) == 0 && search_env("HOME") == NULL)
 	{
 		printf("minishell: cd: HOME not set\n");
-		*status = 1;
 		return (1);
 	}
 	return (0);
 }
 
-void	ft_cd(t_pcommand_d *cmd, int *status)
+void	ft_cd(t_pcommand_d *cmd)
 {
 	int		i;
 	char	*tmp;
@@ -41,7 +40,7 @@ void	ft_cd(t_pcommand_d *cmd, int *status)
 	// 	printf("cd: too many arguments\n");
 	// 	return ;
 	// }
-	if (home_error(cmd, status))
+	if (home_error(cmd))
 		return ;
 	else if (i == 2 && cmd->command[1][0] == '~')
 	{
@@ -50,7 +49,6 @@ void	ft_cd(t_pcommand_d *cmd, int *status)
 		if (chdir(tmp) == -1)
 		{
 			printf("minishell: cd: %s: %s\n", tmp, strerror(errno));
-			*status = 1;
 		}
 		free(tmp);
 		free(tmp2);
@@ -62,7 +60,6 @@ void	ft_cd(t_pcommand_d *cmd, int *status)
 		if (chdir(tmp) == -1)
 		{
 			printf("minishell: cd: %s: %s\n", tmp, strerror(errno));
-			*status = 1;
 		}
 		free(tmp);
 	}
@@ -71,7 +68,6 @@ void	ft_cd(t_pcommand_d *cmd, int *status)
 		if (chdir(cmd->command[1]) == -1)
 		{
 			printf("minishell: cd: %s: %s\n", cmd->command[1], strerror(errno));
-			*status = 1;
 		}
 	}
 	i = 0;
