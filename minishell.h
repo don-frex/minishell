@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:26:02 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/25 16:52:08 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/27 20:27:44 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,10 +101,9 @@ size_t  ft_strlen(const char *c);
 t_env   *__fill_env(char **env);
 char    **convert_list(void);
 void    __export(t_pcommand_d *cmd);
-int		do_command(t_pcommand_d *cmd, int *exit_status);
-//int		redirection(t_pcommand_d *t);
+int		do_command(t_pcommand_d *cmd);
 int		check_builts(char *command);
-void	do_builtins(t_pcommand_d *cmd);
+int		do_builtins(t_pcommand_d *cmd);
 void	__pwd(t_pcommand_d *cmd);
 void    __env(t_env *env);
 void	__unset(t_pcommand_d *cmd);
@@ -118,9 +117,17 @@ int		isin_env(char *var);
 void	rm_node(t_env *env);
 int		isin_env(char *var);
 void	find_rm(int posision);
+void	free_token(t_command_d	*t);
 int		heardoc_check(t_pcommand_d *cmd);
 int		do_heardoc(t_pcommand_d *cmd);
 int		command_check(t_pcommand_d *cmd);
-int 	redirect(t_pcommand_d *cmd);
-t_shell	Glob;
+int		redirect(t_pcommand_d *cmd);
+void	expend_herdock(t_command_d	*t);
+char	*ft_strjoin_parse(char *s1, char *s2);
+char	*concat_herdock(t_command_d	*t);
+void	split_parse(char *p, t_command_d	**t);
+int		do_execbuiltins(t_pcommand_d *cmd);
+int		command_len(char **command);
+void	export_alone(void);
+t_shell         Glob;
 #endif

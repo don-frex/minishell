@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 19:00:18 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/22 21:11:44 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/27 19:26:50 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,37 +77,29 @@ void	__export(t_pcommand_d *cmd)
 {
 	int		i;
 	int		j;
-	int		len;
 	char	*check;
 	char 	*value;
 
 	i = 1;
-	len = command_len(cmd->command);
-	if (redirect(cmd) == -1)
-		return ;
-	if (len == 1)
-		export_alone();
-	else
+
+	while (cmd->command[i])
 	{
-		while (cmd->command[i])
+		check = cut_first(cmd->command[i]);
+		if (isin_env(check) == 0)
 		{
-			check = cut_first(cmd->command[i]);
-			if (isin_env(check) == 0)
-			{
-				j = check_str_is_alone(cmd->command[i]);
-				if (j)
-					add_global(cmd->command[i], 0, j - 1);
-				else
-					add_global(cmd->command[i], 0, ft_strlen(cmd->command[i]) - 1);
-			}
+			j = check_str_is_alone(cmd->command[i]);
+			if (j)
+				add_global(cmd->command[i], 0, j - 1);
 			else
-			{
-				value = cut_secound(cmd->command[i], check);
-				__edit_env(check, value);
-				free(value);
-			}
-			free(check);
-			i++;
+				add_global(cmd->command[i], 0, ft_strlen(cmd->command[i]) - 1);
 		}
+		else
+		{
+			value = cut_secound(cmd->command[i], check);
+			__edit_env(check, value);
+			free(value);
+		}
+		free(check);
+		i++;
 	}
 }
