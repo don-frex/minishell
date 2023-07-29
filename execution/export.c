@@ -6,27 +6,43 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 19:00:18 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/27 19:26:50 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/29 19:48:57 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+void	add_status(t_env *env, int	status)
+{
+	while (env->next)
+	{
+		env = env->next;
+	}
+	env->status = status;
+}
+
 void	add_global(char *str, int start, int end)
 {
 	int	i;
+	int	status;
 
+	status = 1;
 	i = start;
-	while (i <= end)
+	if (start == end)
+		status = 0;
+	else
 	{
-		if (str[i] == '=')
-			break ;
-		i++;
+		while (i <= end)
+		{
+			if (str[i] == '=' || str[i])
+				break ;
+			i++;
+		}
 	}
 	if (i <= end)
 	{
-		_ft_lstadd_back(&Glob.env, _ft_lstnew(cut_first(&str[start]),
-				cut_secound(&str[start], cut_first(&str[start]))));
+		_ft_lstadd_back(&Glob.env, _ft_lstnew(cut_first(&str[0]), cut_secound(&str[start], cut_first(&str[start]))));
+		add_status(Glob.env, status);
 	}
 }
 
@@ -37,28 +53,20 @@ void	export_alone(void)
 	env = Glob.env;
 	while (env)
 	{
-		printf("declare -x %s=\"%s\"\n", env->variable, env->value);
+		if (env->status)
+		{
+			ft_putstr_fd("declare -x ", 1);
+			ft_putstr_fd(env->variable, 1);
+			ft_putstr_fd("=", 1);
+			ft_putstr_fd("\"", 1);
+			ft_putstr_fd(env->value, 1);
+			ft_putstr_fd("\"", 1);
+			ft_putstr_fd("\n", 1);
+		}
+		else
+			printf("declare -x %s\n", env->variable);
 		env = env->next;
 	}
-}
-
-int	check_str_is_alone(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] && (str[i] == ' ' || str[i] == '\t'))
-		i++;
-	while (str[i])
-	{
-		while (str[i] && !(str[i] == ' ' || str[i] == '\t'))
-			i++;
-		while (str[i] && (str[i] == ' ' || str[i] == '\t'))
-		i++;
-		if (str[i] && str[i] && (str[i] == ' ' || str[i] == '\t'))
-			return (i);
-	}
-	return (0);
 }
 
 int	command_len(char **command)
@@ -73,33 +81,40 @@ int	command_len(char **command)
 	return (i);
 }
 
+int	validation_variable(char *str)
+{
+	int		i;
+
+	i = 1;
+	if (!str || (!ft_isalpha(str[0]) && str[0] != '_'))
+		return (1);
+	while (str[i])
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 void	__export(t_pcommand_d *cmd)
 {
 	int		i;
-	int		j;
 	char	*check;
-	char 	*value;
 
 	i = 1;
-
 	while (cmd->command[i])
 	{
 		check = cut_first(cmd->command[i]);
-		if (isin_env(check) == 0)
+		if (validation_variable(check))
 		{
-			j = check_str_is_alone(cmd->command[i]);
-			if (j)
-				add_global(cmd->command[i], 0, j - 1);
-			else
-				add_global(cmd->command[i], 0, ft_strlen(cmd->command[i]) - 1);
+			printf("minishell: not a valid identifier\n");
+			Glob.exit_status = 1;
 		}
+		else if (isin_env(check))
+			__edit_env(check, cut_secound(cmd->command[i], check));
 		else
-		{
-			value = cut_secound(cmd->command[i], check);
-			__edit_env(check, value);
-			free(value);
-		}
-		free(check);
+			add_global(cmd->command[i], ft_strlen(check), ft_strlen(cmd->command[i]));
 		i++;
 	}
 }

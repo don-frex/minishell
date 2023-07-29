@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 19:20:00 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/18 16:39:13 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/29 19:18:54 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,10 @@ char	*cut_first(char *env)
 
 	cnt = 0;
 	while (env[cnt] != '=' && env[cnt])
-	{
 		cnt++;
-	}
 	first = malloc(cnt + 1);
 	i = 0;
-	while (i < cnt && env[cnt])
+	while (i < cnt)
 	{
 		first[i] = env[i];
 		i++;
@@ -64,14 +62,29 @@ void	__edit_env(char *var, char *value)
 
 	size = ft_strlen(var);
 	env = Glob.env;
+	if (value)
+	{
+		while (env)
+		{
+			if (!ft_strncmp(var, env->variable, size))
+			{
+				free(env->value);
+				env->value = ft_strdup(value);
+				if (value)
+					env->status = 1;
+				break ;
+			}
+			env = env->next;
+		}
+	}
+		
+}
+
+void	init_status(t_env *env)
+{
 	while (env)
 	{
-		if (!ft_strncmp(var, env->variable, size))
-		{
-			free(env->value);
-			env->value = ft_strdup(value);
-			break ;
-		}
+		env->status = 1;
 		env = env->next;
 	}
 }
@@ -90,7 +103,9 @@ t_env	*__fill_env(char **env)
 	{
 		_ft_lstadd_back(&env_node, _ft_lstnew(cut_first(env[i]),
 				cut_secound(env[i], cut_first(env[i]))));
+		
 		i++;
 	}
+	init_status(env_node);
 	return (env_node);
 }

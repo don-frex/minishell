@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:26:02 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/27 20:27:44 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/29 18:19:10 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct env
 {
         char            *variable;
         char            *value;
+		int				status;
         struct env      *next;
 }       t_env;
 
@@ -75,6 +76,8 @@ char    *cut_first(char *env);
 char    *ft_strdup(char *s1);
 void    fifo(t_command_d **head, char* str, int v);
 t_file  *fifo_file(t_file *head, char* str, int v, int state);
+void	expend_herdock(t_command_d	*t);
+char	*concat_herdock(t_command_d	*t);
 enum token{
         WORD = 1,
         SPACE = 2,

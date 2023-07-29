@@ -6,27 +6,11 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:28:49 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/27 22:14:05 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/29 20:36:09 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-// check if is coomannd in the command
-
-int command_check(t_pcommand_d *cmd)
-{
-	if (cmd && cmd->command)
-	{
-		while (cmd)
-		{
-			if (cmd->command[0])
-				return (1);
-			cmd = cmd->next;
-		}
-	}
-	return (0);
-}
 
 int list_len(t_env *env)
 {
@@ -125,6 +109,7 @@ int redirect(t_pcommand_d *cmd)
 			if (fd == -1)
 			{
 				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
+				Glob.exit_status = 1;
 				return (1);
 			}
 			dup2(fd, 0);
@@ -136,6 +121,7 @@ int redirect(t_pcommand_d *cmd)
 			if (fd == -1)
 			{
 				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
+				Glob.exit_status = 1;
 				return (1);
 			}
 			dup2(fd, 1);
@@ -147,6 +133,7 @@ int redirect(t_pcommand_d *cmd)
 			if (fd == -1)
 			{
 				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
+				Glob.exit_status = 1;
 				return (1);
 			}
 			dup2(fd, 1);
@@ -159,6 +146,7 @@ int redirect(t_pcommand_d *cmd)
 			if (fd == -1)
 			{
 				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
+				Glob.exit_status = 1;
 				return (1);
 			}
 			dup2(fd, STDIN_FILENO);

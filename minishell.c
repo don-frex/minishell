@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 16:43:57 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/07/28 01:36:12 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/29 20:47:27 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -804,7 +804,7 @@ int		main(int argc, char* argv[], char* envp[])
 
 			if (p && heardoc_check(p))
 				do_heardoc(p);
-			if (p && command_check(p))
+			if (p)
 				do_command(p);
 			  dup2(stdin, STDIN_FILENO);
 			  dup2(stdout, STDOUT_FILENO);

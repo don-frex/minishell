@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 19:12:39 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/28 02:00:50 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/29 20:39:45 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	check_builts(char *command)
 
 int	do_builtins(t_pcommand_d *cmd)
 {
-	if (cmd->command)
+	if (cmd->command[0])
 	{
 		if (ft_strncmp(cmd->command[0], "cd", 3) == 0)
 		{
@@ -61,6 +61,7 @@ int	do_builtins(t_pcommand_d *cmd)
 			ft_exit(cmd->command);
 			return (1);
 		}
+		//printf("check!!!bultinnnnnnn\n");
 	}
 	return (0);
 }
