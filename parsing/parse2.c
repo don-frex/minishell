@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylaaross <ylaaross@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 18:13:10 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/07/22 15:41:54 by ylaaross         ###   ########.fr       */
+/*   Updated: 2023/07/30 15:19:16 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,9 @@ int	command_number(t_command_d *t)
 	b = 1;
 	while (t)
 	{
-		if (t->token == PIPE)
+		if (t->token == PIPE && t->state == GENERALE)
 			b = 1;
-		else if (t->token != PIPE && b == 1)
+		else if (t->token != PIPE && t->state == GENERALE && b == 1)
 		{
 			b = 0;
 			count++;
@@ -137,17 +137,18 @@ char	*ft_strjoin_parse(char *s1, char *s2)
 
 void command_mallocate(t_command_d *t , t_pcommand_d **p)
 {
-	int 		i;
-	int		npipe;
+	int			i;
+	int			npipe;
 
 	i = 0;
-	npipe	= command_number(t);
-	while(i < npipe)
+	npipe = command_number(t);
+	while (i < npipe)
 	{
 		fifo_cmd(p);
 		i++;
 	}
 }
+
 void pass_pipe(t_command_d **t)
 {
 	while (*t && (*t)->token != PIPE)
@@ -156,14 +157,14 @@ void pass_pipe(t_command_d **t)
 }
 void commande_per_pipe(t_command_d *t , t_pcommand_d *p)
 {
-	int 	i;
-	int 	npipe;
+	int		i;
+	int		npipe;
 
-	npipe	= command_number(t);
+	npipe = command_number(t);
 	i = 0;
-	while(i < npipe)
+	while (i < npipe)
 	{
-		p->command = calloc((count_words(t) + 1), sizeof(char*));
+		p->command = calloc((count_words(t) + 1), sizeof(char *));
 		if (i < npipe - 1)
 		{
 			p = p->next;
@@ -173,6 +174,118 @@ void commande_per_pipe(t_command_d *t , t_pcommand_d *p)
 	}
 }
 
+int double_singlecotes (t_command_d *t)
+{
+	if ((t && t->token == QUOTES && t->state == GENERALE)
+		&& (t->next && t->next->token == QUOTES && t->next->state == GENERALE)
+		&& ((t->next->next && t->next->next->token == SPACE
+				&& t->next->next->state == GENERALE)
+			||!(t->next->next)))
+		return (1);
+	return (0);
+}
+
+int content_to_parse(t_command_d *t)
+{
+	if (t && (t->state == SSQUOTES || t->state == SDQUOTES
+			|| (t->token != SQUOTES && t->state == GENERALE)
+			|| (t->token != QUOTES && t->state == GENERALE))
+		&&!(t->token == PIPE && t->state == GENERALE)
+		&& !(t->token == QUOTES && t->state == GENERALE)
+		&& !(t->token == SQUOTES && t->state == GENERALE))
+		return (1);
+	return (0);
+}
+
+int content_file_parse(t_command_d *t)
+{
+	if (t && (t->state == SSQUOTES || t->state == SDQUOTES
+			|| (t->token != SQUOTES && t->state == GENERALE)
+			|| (t->token != QUOTES && t->state == GENERALE))
+		&&!(t->token == PIPE && t->state == GENERALE)
+		&& !(t->token == QUOTES && t->state == GENERALE)
+		&& !(t->token == SQUOTES && t->state == GENERALE))
+		return (1);
+	return (0);
+}
+
+void double_singlecotes_inside(t_command_d **t, t_pcommand_d *p,int *i)
+{
+	p->command[*i] = malloc(sizeof(char));
+	p->command[*i][0] = '\0';
+	*t = (*t)->next;
+	*t = (*t)->next;
+	*i = *i + 1;
+}
+
+void	inside_parse(t_command_d **t, t_pcommand_d *p,int *i)
+{
+	p->command[*i] = calloc(1, sizeof(char));
+	while ((*t) && !(((*t)->token == SPACE || (*t)->token == TAB)
+			&& (*t)->state == GENERALE)
+		&& !((*t)->token == PIPE && (*t)->state == GENERALE)
+		&& !(test2((*t)) && (*t)->state == GENERALE))
+	{
+		if (content_to_parse((*t)))
+			p->command[*i] = ft_strjoin_parse(p->command[*i], (*t)->content);
+		if ((*t))
+			(*t) = (*t)->next;
+	}
+	*i = *i + 1;
+	p->command[*i] = 0;
+}
+
+
+void pipe_(t_command_d *t, t_pcommand_d **p, int *i)
+{
+	if (t && t->token == PIPE)
+	{
+		*i = 0;
+		*p = (*p)->next;
+	}
+}
+void next(t_command_d **t)
+{
+	if (*t)
+		*t = (*t)->next;
+}
+
+void skip_files(t_command_d **t)
+{
+	*t = (*t)->next;
+	while (*t && ((*t)->token == SPACE || (*t)->token == TAB))
+		(*t) = (*t)->next;
+}
+
+void join_parse_next(t_command_d **t,int *state, char **s)
+{
+	if ((*t)->token == QUOTES || (*t)->token == SQUOTES)
+		*state = 1;
+	if (content_file_parse((*t)))
+	*s = ft_strjoin_parse(*s, (*t)->content);
+	next(t);
+}
+
+void kk(t_command_d **t,t_pcommand_d *p,int *i)
+{
+	if (*t && !(test2((*t)) && (*t)->state == GENERALE)
+		&& !((*t)->token == SPACE && (*t)->state == GENERALE)
+		&& !((*t)->token == TAB && (*t)->state == GENERALE)
+		&& !((*t)->token == PIPE && (*t)->state == GENERALE))
+		inside_parse(t, p, i);
+}
+void state_token(t_command_d **t,int *state,int *token)
+{
+	*state = 0;
+	*token = detect_token(*t);
+	skip_files(t);
+}
+
+void pipe_next(t_command_d **t, t_pcommand_d **p,int *i)
+{
+	pipe_(*t, p, i);
+	next(t);
+}
 void parse_127(t_command_d *t, t_pcommand_d *p)
 {
 	int		i;
@@ -181,81 +294,25 @@ void parse_127(t_command_d *t, t_pcommand_d *p)
 	int		state;
 
 	i = 0;
-
 	while (t)
 	{
-		if((t && t->token == QUOTES && t->state == GENERALE) && 
-		(t->next && t->next->token == QUOTES && t->next->state == GENERALE) &&
-		((t->next->next && t->next->next->token == SPACE && t->next->next->state == GENERALE) || 
-		!(t->next->next))
-		)
-		{
-			p->command[i] = malloc(sizeof(char));
-			p->command[i][0] = '\0';
-			t = t->next;
-			t = t->next;
-			i++;
-		}
-		if (t && !(test2(t) && t->state == GENERALE)  &&  !(t->token == SPACE && t->state == GENERALE) 
-			&& !(t->token == TAB && t->state == GENERALE) && !(t->token == PIPE && t->state == GENERALE)) 
-		{
-			p->command[i] = calloc(1, sizeof(char));
-			while (t && !((t->token == SPACE || t->token == TAB) && t->state == GENERALE) && !(t->token == PIPE && t->state == GENERALE) && !(test2(t) && t->state == GENERALE))
-			{
-				
-				if (t && (t->state == SSQUOTES || t->state == SDQUOTES 
-				|| (t->token != SQUOTES && t->state == GENERALE) ||
-				(t->token != QUOTES && t->state == GENERALE)
-				)
-				&&!(t->token == PIPE && t->state == GENERALE)
-				&& !(t->token == QUOTES && t->state == GENERALE)
-				&& !(t->token == SQUOTES && t->state == GENERALE))
-					p->command[i] = ft_strjoin_parse(p->command[i], t->content);
-				if (t)
-					t = t->next;
-			}
-			i++;
-			p->command[i] = 0;
-		}
+		if (double_singlecotes(t))
+			double_singlecotes_inside(&t, p, &i);
+		kk(&t, p, &i);
 		if (test2(t) && t->state == GENERALE)
 		{
-			while(test2(t))
+			while (test2(t))
 			{
-				state = 0;
-				token = detect_token(t);
-				t = t->next;
-				while(t && (t->token == SPACE || t->token == TAB))
-					t = t->next;
-					s = calloc(1,sizeof(char));
-					while (t && !((t->token == SPACE || t->token == TAB) && t->state == GENERALE) && !(test2(t) && t->state == GENERALE) && t->token != PIPE )
-						{
-							if(t->token == QUOTES || t->token == SQUOTES)  	
-								state = 1;
-						if (t && (t->state == SSQUOTES || t->state == SDQUOTES 
-						|| (t->token != SQUOTES && t->state == GENERALE) ||
-						(t->token != QUOTES && t->state == GENERALE))
-						&&!(t->token == PIPE && t->state == GENERALE)
-						&& !(t->token == QUOTES && t->state == GENERALE)
-						&& !(t->token == SQUOTES && t->state == GENERALE))
-						{
-							s = ft_strjoin_parse(s, t->content);
-						}
-						if(t)
-						t = t->next;
-					}
+				state_token(&t, &state, &token);
+				s = calloc(1, sizeof(char));
+				while (t && !((t->token == SPACE || t->token == TAB) && t->state == GENERALE)
+					&& !(test2(t) && t->state == GENERALE) && t->token != PIPE)
+					join_parse_next(&t, &state, &s);
 				p->file = fifo_file(p->file, s, token, state);
 			}
 		}
-		if(t && t->token == PIPE)
-		{
-			i = 0;
-			p = p->next;
-		
-		}
-		if (t)
-			t = t->next;
+		pipe_next(&t, &p, &i);
 	}
-	
 }
 
 void parse_200(t_command_d *t, t_pcommand_d **p)

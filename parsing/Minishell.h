@@ -59,6 +59,7 @@ char	*cut_first(char *env);
 char	*ft_strdup(char *s1);
 void	fifo(t_command_d **head, char* str, int v);
 t_file	*fifo_file(t_file *head, char* str, int v);
+
 enum token{
 	WORD = 1,
 	SPACE = 2,

@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:26:02 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/29 18:19:10 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/30 20:45:55 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,20 +46,35 @@ typedef struct command_devide
 
 typedef struct file
 {
-		int 					state;
-        char            *file_name;
-        int                     type;
+		int		state;
+        char	*file_name;
+        int		type;
+		int		fdin;
+		int		fdout;
         struct file *next;
 }t_file;
 
 typedef struct parsed_command
 {
-        char                                    **command;
-        int                                     exit_status;
+        char                    **command;
+        int                     exit_status;
         struct parsed_command   *next;
         t_file  *file;
 }t_pcommand_d;
-
+void    command_mallocate(t_command_d *t , t_pcommand_d **p);
+void	fifo(t_command_d **head, char *str, int v);
+int	ft_strcmp(const char *s1, const char *s2);
+int     ft_strlen_m(char *p, int i, int *v);
+void	fifo_2(t_command_d **head, char *str, int v, int state);
+char    *cp(char *p, int lent, int *s);
+int	var_digit(char *str);
+int	test_tab(int *v);
+int	test_red_int_her(char *p, int i, int *v);
+int	test_red_out_app(char *p, int i, int *v);
+int	test_special_char(char *p, int i);
+int	dollar_test(char *p, int i, int *v);
+char   *split_parse_2(char *p, t_command_d **t, int state);
+void	split_parse(char *p, t_command_d	**t);
 t_env   *__fill_env(char **env);
 int             test(t_command_d        *t);
 int     count_words(t_command_d *t);
@@ -96,6 +111,7 @@ enum token{
         TAB = 15,
         EXIT_STATUS =16,
 };
+void	fifo_2(t_command_d **head, char *str, int v, int state);
 void    _ft_lstadd_back(t_env **lst, t_env *new);
 char    *cut_first(char *env);
 char    *cut_secound(char *env, char *first_env);
@@ -122,15 +138,15 @@ int		isin_env(char *var);
 void	find_rm(int posision);
 void	free_token(t_command_d	*t);
 int		heardoc_check(t_pcommand_d *cmd);
-int		do_heardoc(t_pcommand_d *cmd);
+void	do_heardoc(t_pcommand_d *cmd);
 int		command_check(t_pcommand_d *cmd);
 int		redirect(t_pcommand_d *cmd);
-void	expend_herdock(t_command_d	*t);
-char	*ft_strjoin_parse(char *s1, char *s2);
-char	*concat_herdock(t_command_d	*t);
-void	split_parse(char *p, t_command_d	**t);
+void	        expend_herdock(t_command_d	*t);
+char	        *ft_strjoin_parse(char *s1, char *s2);
+char	        *concat_herdock(t_command_d	*t);
+void	        split_parse(char *p, t_command_d	**t);
 int		do_execbuiltins(t_pcommand_d *cmd);
 int		command_len(char **command);
-void	export_alone(void);
+void	        export_alone(void);
 t_shell         Glob;
 #endif

@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:28:49 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/29 20:36:09 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 00:37:04 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,12 +70,20 @@ char *check_command(char **path, char *command)
 	char *tmp;
 
 	i = 0;
-	while (path[i])
+	if (command[0] == '/')
 	{
-		tmp = ft_strjoin(path[i], ft_strjoin("/", command));
-		if (access(tmp, F_OK) == 0)
-			return (tmp);
-		i++;
+		if (access(command, F_OK) == 0)
+			return (command);
+	}
+	if (path)
+	{
+		while (path[i])
+		{
+			tmp = ft_strjoin(path[i], ft_strjoin("/", command));
+			if (access(tmp, F_OK) == 0)
+				return (tmp);
+			i++;
+		}
 	}
 	printf("minishell>: %s: command not found\n", command);
 	Glob.exit_status = 127;
@@ -113,7 +121,6 @@ int redirect(t_pcommand_d *cmd)
 				return (1);
 			}
 			dup2(fd, 0);
-			cmd->file = cmd->file->next;
 		}
 		else if (cmd->file->type == 8)
 		{
@@ -125,7 +132,6 @@ int redirect(t_pcommand_d *cmd)
 				return (1);
 			}
 			dup2(fd, 1);
-			cmd->file = cmd->file->next;
 		}
 		else if (cmd->file->type == 7)
 		{
@@ -137,21 +143,8 @@ int redirect(t_pcommand_d *cmd)
 				return (1);
 			}
 			dup2(fd, 1);
-			cmd->file = cmd->file->next;
 		}
-		else if (cmd->file->type == 13)
-		{
-			char *path = ft_strjoin("/tmp/", cmd->file->file_name);
-			fd = open(path, O_RDONLY, 0666);
-			if (fd == -1)
-			{
-				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
-				Glob.exit_status = 1;
-				return (1);
-			}
-			dup2(fd, STDIN_FILENO);
-			cmd->file = cmd->file->next;
-		}
+		cmd->file = cmd->file->next;
 	}
 	return (0);
 }
@@ -166,14 +159,14 @@ int do_command(t_pcommand_d *cmd)
 	int input;
 	int	status;
 
-	if (!cmd)
+	if (!cmd->command[0])
 		return 0;
 	paths = ft_split(search_env("PATH"), ':');
 	check = 0;
 	input = 0;
 		while (cmd)
 		{
-			if (do_builtins(cmd) && !redirect(cmd))
+			if (do_builtins(cmd))
 			{
 				cmd = cmd->next;
 				env = convert_list();
@@ -191,14 +184,16 @@ int do_command(t_pcommand_d *cmd)
 						close(fd[1]);
 						close(fd[0]);
 					}
-					if (cmd->file)
-						check = redirect(cmd);
-					if (cmd->command[0] && check == 0)
+					check = redirect(cmd);
+					if (check == 0)
 					{
 						if (do_execbuiltins(cmd))
 							exit(Glob.exit_status);
 						if (check_command(paths, cmd->command[0]))
+						{
+							
 							execve(check_command(paths, cmd->command[0]), cmd->command, env);
+						}
 					}
 					// else
 						exit(Glob.exit_status);
