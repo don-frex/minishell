@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 16:43:57 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/07/31 17:01:42 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 19:44:34 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -567,7 +567,7 @@ void increment_expexit(t_command_d	**t, int *inside, int *previoush)
 	*previoush = 0;
 }
 
-void	expend_exit(t_command_d	*t, int exit_s)
+void	expend_exit(t_command_d	*t)
 {
 	int		previoush;
 	int		inside;
@@ -588,7 +588,7 @@ void	expend_exit(t_command_d	*t, int exit_s)
 				&& (t->state == GENERALE || t->state == SDQUOTES)))
 		{
 			free(t->content);
-			t->content = ft_strdup(ft_itoa(exit_s));
+			t->content = ft_strdup(ft_itoa(g_lob.exit_status));
 		}
 		if (t && !inside)
 			t = t->next;
@@ -627,7 +627,24 @@ void	free_cmd_files(t_pcommand_d	*p)
 		p = tmp;
 	}
 }
+void	calculate_lenth(t_pcommand_d	*p)
+{
+	int					i;
+	t_pcommand_d		*tmp;
 
+	i = 0;
+	tmp = p;
+	while (p)
+	{
+		i++;
+		p = p->next;
+	}
+	while (tmp)
+	{
+		tmp->lenth = i;
+		tmp = tmp->next;
+	}
+}
 int		main(int argc, char* argv[], char* envp[])
 {
 	int 			exit_s;
@@ -669,9 +686,9 @@ int		main(int argc, char* argv[], char* envp[])
 			// 	printf("%s   %d   %d\n",t->content,t->state,t->token);
 			// 	t=t->next;
 			// }
-			expend_exit(t, exit_p);
+			expend_exit(t);
 			parse_200(t, &p);
-			
+			calculate_lenth(p);
 			free_token(t);
 		// int i;
 		// while (p)
@@ -684,6 +701,7 @@ int		main(int argc, char* argv[], char* envp[])
 		// 		printf("||%s||\n",p->command[i]);
 		// 		i++;	
 		// 	}
+		// 	printf("||%d||",p->lenth);
 		// 	printf("--------------file-------------\n");	
 		// 		while(p->file)
 		// 		{
@@ -694,7 +712,7 @@ int		main(int argc, char* argv[], char* envp[])
 		// 	p = p->next;
 		// }
 
-			if (p && heardoc_check(p))
+			if (p && heardoc_check(p->file))
 				do_heardoc(p);
 			if (p)
 				do_command(p);	

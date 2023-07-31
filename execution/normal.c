@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:28:49 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 18:58:54 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,8 @@ int redirect(t_pcommand_d *cmd)
 			fd = open(cmd->file->file_name, O_RDONLY);
 			if (fd == -1)
 			{
-				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
+				printf("minishell: %s: %s\n", 
+					cmd->file->file_name, strerror(errno));
 				g_lob.exit_status = 1;
 				return (1);
 			}
@@ -127,7 +128,8 @@ int redirect(t_pcommand_d *cmd)
 			fd = open(cmd->file->file_name, O_RDWR | O_CREAT | O_TRUNC, 0644);
 			if (fd == -1)
 			{
-				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
+				printf("minishell: %s: %s\n", 
+					cmd->file->file_name, strerror(errno));
 				g_lob.exit_status = 1;
 				return (1);
 			}
@@ -138,7 +140,8 @@ int redirect(t_pcommand_d *cmd)
 			fd = open(cmd->file->file_name, O_RDWR | O_CREAT | O_APPEND, 0644);
 			if (fd == -1)
 			{
-				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
+				printf("minishell: %s: %s\n", 
+					cmd->file->file_name, strerror(errno));
 				g_lob.exit_status = 1;
 				return (1);
 			}
@@ -184,7 +187,8 @@ int do_command(t_pcommand_d *cmd)
 						close(fd[1]);
 						close(fd[0]);
 					}
-					check = redirect(cmd);
+					if (cmd->file)
+						check = redirect(cmd);
 					if (check == 0)
 					{
 						if (do_execbuiltins(cmd))

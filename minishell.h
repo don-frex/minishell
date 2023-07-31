@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:26:02 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 17:04:25 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 19:41:12 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ typedef struct command_devide
 	struct command_devide	*next;
 }t_command_d;
 
-
 typedef struct file
 {
 	int			state;
@@ -58,13 +57,14 @@ typedef struct file
 
 typedef struct parsed_command
 {
+	int						lenth;
 	char					**command;
 	int						exit_status;
 	struct parsed_command	*next;
 	t_file					*file;
 }t_pcommand_d;
 
-void	command_mallocate(t_command_d *t , t_pcommand_d **p);
+void	command_mallocate(t_command_d *t, t_pcommand_d **p);
 void	fifo(t_command_d **head, char *str, int v);
 int		ft_strcmp(const char *s1, const char *s2);
 int		ft_strlen_m(char *p, int i, int *v);
@@ -114,6 +114,7 @@ enum	e_token{
 	TAB = 15,
 	EXIT_STATUS =16,
 };
+void	expend_exit(t_command_d	*t);
 void	fifo_2(t_command_d **head, char *str, int v, int state);
 void	_ft_lstadd_back(t_env **lst, t_env *new);
 char	*cut_first(char *env);
@@ -140,7 +141,7 @@ void	rm_node(t_env *env);
 int		isin_env(char *var);
 void	find_rm(int posision);
 void	free_token(t_command_d	*t);
-int		heardoc_check(t_pcommand_d *cmd);
+int		heardoc_check(t_file *files);
 void	do_heardoc(t_pcommand_d *cmd);
 int		command_check(t_pcommand_d *cmd);
 int		redirect(t_pcommand_d *cmd);

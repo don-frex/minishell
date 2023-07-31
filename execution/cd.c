@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 17:34:20 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 18:13:15 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	ft_cd(t_pcommand_d *cmd)
 	char	*tmp;
 	int		i;
 
-	if (home_error(cmd))
+	if (home_error(cmd) || cmd->lenth > 1)
 		return ;
 	if (ft_strlen(cmd->command[1]) == 0)
 		tmp = search_env("HOME");
