@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 17:43:12 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/28 00:12:39 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	ft_exit(char **command)
 
 	i = 0;
 	if (command[1] == NULL)
-		exit(Glob.exit_status);
+		exit(g_lob.exit_status);
 	else if (command[1] && command[2] && is_digit_loop(command[1]) == 1)
 	{
 			ft_putstr_fd("minishell: exit: ", 2);
@@ -63,6 +63,6 @@ void	ft_exit(char **command)
 	{
 		//ft_putstr_fd("exit\n", 2);
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-		Glob.exit_status = 1;
+		g_lob.exit_status = 1;
 	}
 }

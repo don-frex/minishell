@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:28:49 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 00:37:04 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char **convert_list(void)
 	int size;
 	int i;
 
-	env = Glob.env;
+	env = g_lob.env;
 	size = list_len(env);
 	cp_env = (char **)malloc((size + 1) * sizeof(char *));
 	i = 0;
@@ -54,7 +54,7 @@ char *search_env(char *var)
 	int size;
 
 	size = ft_strlen(var);
-	env = Glob.env;
+	env = g_lob.env;
 	while (env)
 	{
 		if (!ft_strncmp(var, env->variable, size))
@@ -86,7 +86,7 @@ char *check_command(char **path, char *command)
 		}
 	}
 	printf("minishell>: %s: command not found\n", command);
-	Glob.exit_status = 127;
+	g_lob.exit_status = 127;
 	
 	return (NULL);
 }
@@ -117,7 +117,7 @@ int redirect(t_pcommand_d *cmd)
 			if (fd == -1)
 			{
 				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
-				Glob.exit_status = 1;
+				g_lob.exit_status = 1;
 				return (1);
 			}
 			dup2(fd, 0);
@@ -128,7 +128,7 @@ int redirect(t_pcommand_d *cmd)
 			if (fd == -1)
 			{
 				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
-				Glob.exit_status = 1;
+				g_lob.exit_status = 1;
 				return (1);
 			}
 			dup2(fd, 1);
@@ -139,7 +139,7 @@ int redirect(t_pcommand_d *cmd)
 			if (fd == -1)
 			{
 				printf("minishell: %s: %s\n", cmd->file->file_name, strerror(errno));
-				Glob.exit_status = 1;
+				g_lob.exit_status = 1;
 				return (1);
 			}
 			dup2(fd, 1);
@@ -188,7 +188,7 @@ int do_command(t_pcommand_d *cmd)
 					if (check == 0)
 					{
 						if (do_execbuiltins(cmd))
-							exit(Glob.exit_status);
+							exit(g_lob.exit_status);
 						if (check_command(paths, cmd->command[0]))
 						{
 							
@@ -196,7 +196,7 @@ int do_command(t_pcommand_d *cmd)
 						}
 					}
 					// else
-						exit(Glob.exit_status);
+						exit(g_lob.exit_status);
 				}
 				else
 				{
@@ -206,7 +206,7 @@ int do_command(t_pcommand_d *cmd)
 						close(input);
 					wait(&status);
 					if (WIFEXITED(status))
-						Glob.exit_status = WEXITSTATUS(status);
+						g_lob.exit_status = WEXITSTATUS(status);
 				}
 			cmd = cmd->next;
 		}

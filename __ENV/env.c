@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 19:20:00 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/29 19:18:54 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	__edit_env(char *var, char *value)
 	int		size;
 
 	size = ft_strlen(var);
-	env = Glob.env;
+	env = g_lob.env;
 	if (value)
 	{
 		while (env)

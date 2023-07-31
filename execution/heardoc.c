@@ -6,22 +6,22 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 22:21:06 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 00:49:52 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 17:01:54 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	heardoc_check(t_pcommand_d *cmd)
+int	heardoc_check(t_pcommand_d *cmmd)
 {
-	while (cmd)
+	t_pcommand_d *cmd;
+
+	cmd = cmmd;
+	while (cmd->file)
 	{
-		if (cmd->file)
-		{
-			if (cmd->file->type == 13)
-				return (1);
-		}
-		cmd = cmd->next;
+		if (cmd->file->type == 13)
+			return (1);
+		cmd->file = cmd->file->next;
 	}
 	return (0);
 }

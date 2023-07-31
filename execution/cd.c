@@ -6,74 +6,60 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 17:34:20 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/29 19:50:31 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-// glob env is a global variable in this case
+// g_lob env is a g_lobal variable in this case
 
 int	home_error(t_pcommand_d *cmd)
 {
 	if (ft_strlen(cmd->command[1]) == 0 && search_env("HOME") == NULL)
 	{
 		printf("minishell: cd: HOME not set\n");
-		Glob.exit_status = 1;
+		g_lob.exit_status = 1;
 		return (1);
 	}
 	return (0);
 }
 
+int	cd_command_len(t_pcommand_d *cmd)
+{
+	int	i;
+
+	i = 1;
+	while (cmd->next)
+	{
+		i++;
+		cmd = cmd->next;
+	}
+	return (1);
+}
+
+void	printerror(int i, char *tmp)
+{
+	if (i == -1)
+	{
+		printf("minishell: cd: %s: %s\n", tmp, strerror(errno));
+		g_lob.exit_status = 1;
+	}
+}
+
 void	ft_cd(t_pcommand_d *cmd)
 {
-	int		i;
 	char	*tmp;
-	char	*tmp2;
+	int		i;
 
-	i = 0;
-	if (redirect(cmd) == -1)
-		return ;
-	while (cmd->command[i])
-		i++;
 	if (home_error(cmd))
 		return ;
-	else if (i == 2 && cmd->command[1][0] == '~')
-	{
+	if (ft_strlen(cmd->command[1]) == 0)
 		tmp = search_env("HOME");
-		tmp2 = ft_strjoin(tmp, cmd->command[1] + 1);
-		if (chdir(tmp) == -1)
-		{
-			printf("minishell: cd: %s: %s\n", tmp, strerror(errno));
-			Glob.exit_status = 1;
-		}
-		free(tmp);
-		free(tmp2);
-	}
-	else
-	if (i == 1)
-	{
+	else if (ft_strlen(cmd->command[1]) == 1 && cmd->command[1][0] == '~')
 		tmp = search_env("HOME");
-		if (chdir(tmp) == -1)
-		{
-			printf("minishell: cd: %s: %s\n", tmp, strerror(errno));
-			Glob.exit_status = 1;
-		}
-		free(tmp);
-	}
 	else
-	{
-		if (chdir(cmd->command[1]) == -1)
-		{
-			printf("minishell: cd: %s: %s\n", cmd->command[1], strerror(errno));
-			Glob.exit_status = 1;
-		}
-	}
-	i = 0;
-	while (cmd->command[i])
-	{
-		free(cmd->command[i]);
-		i++;
-	}
-	free(cmd->command);
+		tmp = cmd->command[1];
+	i = chdir(tmp);
+	printerror(i, tmp);
 }

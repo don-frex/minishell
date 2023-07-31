@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:22:41 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/10 22:54:23 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,15 @@
 // 	// 	(void) ac;
 // 	// 	(void) av;
 // 	// 	printf("check!! %s\n", ptr);
-// 	// 	Glob.env = __fill_env(env);
+// 	// 	g_lob.env = __fill_env(env);
 // 	// 	if (ft_strncmp(ptr, "pwd", 3) == 0)
-// 	// 		__pwd(Glob.env);
+// 	// 		__pwd(g_lob.env);
 // 	// 	if (ft_strncmp(ptr, "env", 3) == 0)
-// 	// 		__env(Glob.env);
+// 	// 		__env(g_lob.env);
 // 	// 	if (ft_strncmp(ptr, "export", 6) == 0)
 // 	// 	{
 // 	// 		__export(ptr);
-// 	// 		//__env(Glob.env);
+// 	// 		//__env(g_lob.env);
 // 	// 	}
 // 	// 	free(ptr);
 // 	// }
@@ -38,7 +38,7 @@
 // 	(void) ac;
 // 	(void) av;
 // 	char **command;
-// 	Glob.env = __fill_env(env);
+// 	g_lob.env = __fill_env(env);
 // 	while (1)
 // 	{
 // 		ptr = readline("AE_SHELL_> ");

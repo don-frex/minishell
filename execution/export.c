@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 19:00:18 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/29 19:48:57 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	add_status(t_env *env, int	status)
 	env->status = status;
 }
 
-void	add_global(char *str, int start, int end)
+void	add_g_lobal(char *str, int start, int end)
 {
 	int	i;
 	int	status;
@@ -41,8 +41,8 @@ void	add_global(char *str, int start, int end)
 	}
 	if (i <= end)
 	{
-		_ft_lstadd_back(&Glob.env, _ft_lstnew(cut_first(&str[0]), cut_secound(&str[start], cut_first(&str[start]))));
-		add_status(Glob.env, status);
+		_ft_lstadd_back(&g_lob.env, _ft_lstnew(cut_first(&str[0]), cut_secound(&str[start], cut_first(&str[start]))));
+		add_status(g_lob.env, status);
 	}
 }
 
@@ -50,7 +50,7 @@ void	export_alone(void)
 {
 	t_env	*env;
 
-	env = Glob.env;
+	env = g_lob.env;
 	while (env)
 	{
 		if (env->status)
@@ -109,12 +109,12 @@ void	__export(t_pcommand_d *cmd)
 		if (validation_variable(check))
 		{
 			printf("minishell: not a valid identifier\n");
-			Glob.exit_status = 1;
+			g_lob.exit_status = 1;
 		}
 		else if (isin_env(check))
 			__edit_env(check, cut_secound(cmd->command[i], check));
 		else
-			add_global(cmd->command[i], ft_strlen(check), ft_strlen(cmd->command[i]));
+			add_g_lobal(cmd->command[i], ft_strlen(check), ft_strlen(cmd->command[i]));
 		i++;
 	}
 }

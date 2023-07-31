@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 16:43:57 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/07/30 20:59:50 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 17:01:42 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,7 +240,7 @@ int		detect_quotes2(t_command_d *t)
 	}
 	if (!d_quotes && !s_quotes)
 		return (1);
-	Glob.exit_status = 1;
+	g_lob.exit_status = 1;
 	return (0);
 }
 
@@ -304,7 +304,7 @@ int pipe_red_test(t_command_d	*t, int SEARCH)
 	}
 	if (b_pipe >= 1)
 		return (1);
-	Glob.exit_status = 1;
+	g_lob.exit_status = 1;
 	return (0);
 }
 
@@ -335,7 +335,7 @@ int while_herdock(t_command_d	*t, int search,int *b_herdock)
 	{
 		if (*b_herdock >= 1 && test(t))
 		{
-			Glob.exit_status = 258;
+			g_lob.exit_status = 258;
 			return (0);
 		}
 		if (t->token == search && t->state == GENERALE)
@@ -362,7 +362,7 @@ int herdock_redirect_test(t_command_d	*t ,int search)
 		return (0);
 	if (b_herdock == 0)
 		return (1);
-	Glob.exit_status = 258;
+	g_lob.exit_status = 258;
 	return (0);
 }
 
@@ -493,10 +493,10 @@ void expend_p1(t_command_d	**t, int *previoush,t_command_d	**tcp, int *inside)
 	}
 	else if ((*t)->token == VARIABLE && *previoush == 0
 		&& ((*t)->state == SDQUOTES))
-		search(*t, Glob.env, tcp);
+		search(*t, g_lob.env, tcp);
 	else if ((*t)->token == VARIABLE && *previoush == 0
 		&& ((*t)->state == GENERALE))
-		search2((*t), Glob.env, tcp);
+		search2((*t), g_lob.env, tcp);
 	else if (*previoush == 1)
 		two_functions(t , tcp, inside, previoush);
 	else
@@ -533,7 +533,7 @@ void	expend_herdock(t_command_d	*t)
 		if (t->token == VARIABLE)
 		{
 			s = 0;
-			s = find(t, Glob.env);
+			s = find(t, g_lob.env);
 			if (s)
 			{
 				free(t->content);
@@ -642,7 +642,7 @@ int		main(int argc, char* argv[], char* envp[])
 	exit_s = 0;
 	(void)argc;
 	(void)argv;
-	Glob.env = __fill_env(envp);
+	g_lob.env = __fill_env(envp);
 	int stdin = dup(STDIN_FILENO);
 	int stdout = dup(STDOUT_FILENO);
 
@@ -652,11 +652,11 @@ int		main(int argc, char* argv[], char* envp[])
 		t = 0;
 		read = readline("minishell> ");
 		if (!read)
-			exit(Glob.exit_status);
+			exit(g_lob.exit_status);
 		add_history(read);
 		split_parse(read, &t);
 		detect_state(t);
-		exit_p = Glob.exit_status;
+		exit_p = g_lob.exit_status;
 		if(detect_quotes2(t) && herdock_redirect_test(t, REDIRECT_IN) && herdock_redirect_test(t, REDIRECT) &&
 		herdock_redirect_test(t, REDIRECT_IN) && herdock_redirect_test(t, APPEND) && herdock_redirect_test(t, HERDOCK) && pipe_red_test(t , PIPE))
 		{
