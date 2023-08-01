@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 19:20:00 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/01 01:07:24 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,6 @@ char	*cut_secound(char *env, char *first_env)
 	return (sec);
 }
 
-
-//if you want edit in the value of each variable you can use this function
-
 void	__edit_env(char *var, char *value)
 {
 	t_env	*env;
@@ -76,8 +73,7 @@ void	__edit_env(char *var, char *value)
 			}
 			env = env->next;
 		}
-	}
-		
+	}	
 }
 
 void	init_status(t_env *env)
@@ -103,7 +99,6 @@ t_env	*__fill_env(char **env)
 	{
 		_ft_lstadd_back(&env_node, _ft_lstnew(cut_first(env[i]),
 				cut_secound(env[i], cut_first(env[i]))));
-		
 		i++;
 	}
 	init_status(env_node);

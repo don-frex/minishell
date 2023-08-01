@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 17:34:20 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 18:13:15 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 20:33:57 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,6 @@ int	home_error(t_pcommand_d *cmd)
 		return (1);
 	}
 	return (0);
-}
-
-int	cd_command_len(t_pcommand_d *cmd)
-{
-	int	i;
-
-	i = 1;
-	while (cmd->next)
-	{
-		i++;
-		cmd = cmd->next;
-	}
-	return (1);
 }
 
 void	printerror(int i, char *tmp)

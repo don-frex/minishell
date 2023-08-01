@@ -6,11 +6,23 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/09 19:12:39 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 20:34:05 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int	command_len(char **command)
+{
+	int	i;
+
+	i = 0;
+	while (command[i])
+	{
+		i++;
+	}
+	return (i);
+}
 
 int	check_builts(char *command)
 {
@@ -46,7 +58,8 @@ int	do_builtins(t_pcommand_d *cmd)
 			ft_cd(cmd);
 			return (1);
 		}
-		else if ((ft_strncmp(cmd->command[0], "export", 7) == 0) && command_len(cmd->command) > 1)
+		else if ((ft_strncmp(cmd->command[0],
+					"export", 7) == 0) && command_len(cmd->command) > 1)
 		{
 			__export(cmd);
 			return (1);
@@ -61,32 +74,32 @@ int	do_builtins(t_pcommand_d *cmd)
 			ft_exit(cmd->command);
 			return (1);
 		}
-		//printf("check!!!bultinnnnnnn\n");
 	}
 	return (0);
 }
 
 int	do_execbuiltins(t_pcommand_d *cmd)
 {
-		if (ft_strncmp(cmd->command[0], "echo", 5) == 0)
-		{
-			ft_echo(cmd);
-			return (1);
-		}
-		else if (ft_strncmp(cmd->command[0], "pwd", 4) == 0)
-		{
-			__pwd(cmd);
-			return (1);
-		}
-		else if (ft_strncmp(cmd->command[0], "env", 4) == 0)
-		{
-			__env(g_lob.env);
-			return (1);
-		}
-		else if ((ft_strncmp(cmd->command[0], "export", 7) == 0) && command_len(cmd->command) == 1)
-		{
-			export_alone();
-			return (1);
-		}
+	if (ft_strncmp(cmd->command[0], "echo", 5) == 0)
+	{
+		ft_echo(cmd);
+		return (1);
+	}
+	else if (ft_strncmp(cmd->command[0], "pwd", 4) == 0)
+	{
+		__pwd(cmd);
+		return (1);
+	}
+	else if (ft_strncmp(cmd->command[0], "env", 4) == 0)
+	{
+		__env(g_lob.env);
+		return (1);
+	}
+	else if ((ft_strncmp(cmd->command[0],
+				"export", 7) == 0) && command_len(cmd->command) == 1)
+	{
+		export_alone();
+		return (1);
+	}
 	return (0);
 }

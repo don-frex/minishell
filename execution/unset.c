@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 21:20:44 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/01 00:44:15 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ void	__unset(t_pcommand_d *cmd)
 		return ;
 	while (cmd->command[i])
 	{
-		if ((posision = isin_env(cmd->command[i])))
+		posision = isin_env(cmd->command[i]);
+		if (posision)
 			find_rm(posision);
 		i++;
 	}

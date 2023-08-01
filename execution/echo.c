@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 17:36:29 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/30 15:22:35 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/01 00:43:21 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ void	ft_echo(t_pcommand_d *t)
 	i = 1;
 	n = 0;
 	j = 0;
-	if (redirect(t) == -1)
-		return ;
 	while (t->command[i] && ft_strncmp(t->command[i], "-n", 2) == 0)
 	{
 		if (forc_check(t->command[i]))

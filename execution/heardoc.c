@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 22:21:06 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 19:45:11 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/01 01:49:07 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	heardoc_check(t_file *file)
 {
-	t_file *files;
+	t_file	*files;
 
 	files = file;
 	while (files)
@@ -33,14 +33,14 @@ void	start_heardoc(int *fd, char *endo, t_file *file)
 
 	while (1)
 	{
-		line = 	readline("> ");
+		line = readline("> ");
 		if (line)
 		{
 			if (ft_strncmp(endo, line, ft_strlen(endo)+1) == 0)
 				break ;
 			t = 0;
 			split_parse(line, &t);
-			if(!file->state)
+			if (!file->state)
 			{
 				expend_herdock(t);
 				expend_exit(t);
@@ -53,34 +53,41 @@ void	start_heardoc(int *fd, char *endo, t_file *file)
 	}
 }
 
+void	finded_heardoc(t_file *tmp, int fd[2])
+{
+	int		pid;
+
+	pipe(fd);
+	pid = fork();
+	if (pid == 0)
+	{
+		close(fd[0]);
+		start_heardoc(fd, tmp->file_name, tmp);
+		exit(0);
+	}
+	else
+	{
+		close(fd[1]);
+		waitpid(pid, NULL, 0);
+	}
+}
+
 void	do_heardoc(t_pcommand_d *cmd)
 {
-	int	fd[2];
-	char *buf = ft_calloc(45, 1);
-	int	pid;
-	t_file *tmp;
+	int		fd[2];
+	char	*buf;
+	t_file	*tmp;
 
 	tmp = cmd->file;
 	while (tmp)
 	{
 		if (tmp->type == 13)
-		{
-			pipe(fd);
-			pid = fork();
-			if (pid == 0) {
-				close(fd[0]);
-				start_heardoc(fd, tmp->file_name, tmp);
-				exit(0);
-			}
-			else
-			{
-				close(fd[1]);
-				waitpid(pid, NULL, 0);
-			}
-		}
+			finded_heardoc(tmp, fd);
 		tmp = tmp->next;
 	}
+	buf = ft_calloc(1, 1);
 	dup2(fd[0], 0);
 	close(fd[0]);
 	read(0, buf, 0);
+	free(buf);
 }

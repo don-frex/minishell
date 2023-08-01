@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 19:00:18 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
+/*   Updated: 2023/07/31 20:35:00 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ void	add_g_lobal(char *str, int start, int end)
 	}
 	if (i <= end)
 	{
-		_ft_lstadd_back(&g_lob.env, _ft_lstnew(cut_first(&str[0]), cut_secound(&str[start], cut_first(&str[start]))));
+		_ft_lstadd_back(&g_lob.env, _ft_lstnew(cut_first(&str[0]),
+				cut_secound(&str[start], cut_first(&str[start]))));
 		add_status(g_lob.env, status);
 	}
 }
@@ -67,18 +68,6 @@ void	export_alone(void)
 			printf("declare -x %s\n", env->variable);
 		env = env->next;
 	}
-}
-
-int	command_len(char **command)
-{
-	int i;
-
-	i = 0;
-	while (command[i])
-	{
-		i++;
-	}
-	return (i);
 }
 
 int	validation_variable(char *str)
@@ -114,7 +103,8 @@ void	__export(t_pcommand_d *cmd)
 		else if (isin_env(check))
 			__edit_env(check, cut_secound(cmd->command[i], check));
 		else
-			add_g_lobal(cmd->command[i], ft_strlen(check), ft_strlen(cmd->command[i]));
+			add_g_lobal(cmd->command[i], ft_strlen(check),
+				ft_strlen(cmd->command[i]));
 		i++;
 	}
 }

@@ -6,13 +6,12 @@
 /*   By: ylaaross <ylaaross@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/03 19:24:51 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/07/09 21:25:48 by ylaaross         ###   ########.fr       */
+/*   Updated: 2023/08/01 00:16:56 by ylaaross         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-#include<stdlib.h>
-
+#include <stdlib.h>
 
 char	*ft_strdup(char *s1)
 {

@@ -6,32 +6,19 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:28:49 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 18:58:54 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/01 01:18:24 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int list_len(t_env *env)
+char	**convert_list(void)
 {
-	int i;
-
-	i = 0;
-	while (env)
-	{
-		i++;
-		env = env->next;
-	}
-	return (i);
-}
-
-char **convert_list(void)
-{
-	char **cp_env;
-	char *tmp_variable;
-	t_env *env;
-	int size;
-	int i;
+	char	**cp_env;
+	char	*tmp_variable;
+	t_env	*env;
+	int		size;
+	int		i;
 
 	env = g_lob.env;
 	size = list_len(env);
@@ -48,26 +35,10 @@ char **convert_list(void)
 	return (cp_env);
 }
 
-char *search_env(char *var)
+char	*check_command(char **path, char *command)
 {
-	t_env *env;
-	int size;
-
-	size = ft_strlen(var);
-	env = g_lob.env;
-	while (env)
-	{
-		if (!ft_strncmp(var, env->variable, size))
-			return (env->value);
-		env = env->next;
-	}
-	return (NULL);
-}
-
-char *check_command(char **path, char *command)
-{
-	int i;
-	char *tmp;
+	int		i;
+	char	*tmp;
 
 	i = 0;
 	if (command[0] == '/')
@@ -87,133 +58,75 @@ char *check_command(char **path, char *command)
 	}
 	printf("minishell>: %s: command not found\n", command);
 	g_lob.exit_status = 127;
-	
 	return (NULL);
 }
 
-void free_command(t_pcommand_d *cmd)
+void	child_command(t_pcommand_d *cmd, char **env, int *fd, int input)
 {
-	t_file *tmp_file;
+	int		check;
+	char	**paths;
 
-	if (cmd && cmd->file)
-	{
-		while (cmd->file)
-		{
-			tmp_file = cmd->file;
-			cmd->file = cmd->file->next;
-			free(tmp_file->file_name);
-			free(tmp_file);
-		}
-	}
-}
-int redirect(t_pcommand_d *cmd)
-{
-	int fd;
-	while (cmd->file)
-	{
-		if (cmd->file->type == 14)
-		{
-			fd = open(cmd->file->file_name, O_RDONLY);
-			if (fd == -1)
-			{
-				printf("minishell: %s: %s\n", 
-					cmd->file->file_name, strerror(errno));
-				g_lob.exit_status = 1;
-				return (1);
-			}
-			dup2(fd, 0);
-		}
-		else if (cmd->file->type == 8)
-		{
-			fd = open(cmd->file->file_name, O_RDWR | O_CREAT | O_TRUNC, 0644);
-			if (fd == -1)
-			{
-				printf("minishell: %s: %s\n", 
-					cmd->file->file_name, strerror(errno));
-				g_lob.exit_status = 1;
-				return (1);
-			}
-			dup2(fd, 1);
-		}
-		else if (cmd->file->type == 7)
-		{
-			fd = open(cmd->file->file_name, O_RDWR | O_CREAT | O_APPEND, 0644);
-			if (fd == -1)
-			{
-				printf("minishell: %s: %s\n", 
-					cmd->file->file_name, strerror(errno));
-				g_lob.exit_status = 1;
-				return (1);
-			}
-			dup2(fd, 1);
-		}
-		cmd->file = cmd->file->next;
-	}
-	return (0);
-}
-
-int do_command(t_pcommand_d *cmd)
-{
-	int id;
-	int fd[2];
-	char **paths;
-	char **env;
-	int check;
-	int input;
-	int	status;
-
-	if (!cmd->command[0])
-		return 0;
 	paths = ft_split(search_env("PATH"), ':');
 	check = 0;
+	if (!check_builts(cmd->command[0]))
+		dup2(input, 0);
+	if (cmd->next)
+	{
+		dup2(fd[1], 1);
+		close(fd[1]);
+		close(fd[0]);
+	}
+	if (cmd->file)
+		check = redirect(cmd);
+	if (check == 0)
+	{
+		if (do_execbuiltins(cmd))
+			exit(g_lob.exit_status);
+		if (check_command(paths, cmd->command[0]))
+			execve(check_command(paths, cmd->command[0]),
+				cmd->command, env);
+	}
+	exit(g_lob.exit_status);
+}
+
+void	wait_chlid(int *fd, int *input)
+{
+	int	status;
+
+	close(fd[1]);
+	*input = fd[0];
+	if (!*input)
+		close(*input);
+	wait(&status);
+	if (WIFEXITED(status))
+		g_lob.exit_status = WEXITSTATUS(status);
+}
+
+int	do_command(t_pcommand_d *cmd)
+{
+	int		id;
+	int		fd[2];
+	char	**env;
+	int		input;
+
+	if (!cmd->command[0])
+		return (0);
 	input = 0;
-		while (cmd)
+	while (cmd)
+	{
+		if (do_builtins(cmd))
 		{
-			if (do_builtins(cmd))
-			{
-				cmd = cmd->next;
-				env = convert_list();
-				continue ;
-			}
-			pipe(fd);
-				id = fork();
-				if (id == 0)
-				{
-					if (!check_builts(cmd->command[0]))
-						dup2(input, 0);
-					if (cmd->next)
-					{
-						dup2(fd[1], 1);
-						close(fd[1]);
-						close(fd[0]);
-					}
-					if (cmd->file)
-						check = redirect(cmd);
-					if (check == 0)
-					{
-						if (do_execbuiltins(cmd))
-							exit(g_lob.exit_status);
-						if (check_command(paths, cmd->command[0]))
-						{
-							
-							execve(check_command(paths, cmd->command[0]), cmd->command, env);
-						}
-					}
-					// else
-						exit(g_lob.exit_status);
-				}
-				else
-				{
-					close(fd[1]);
-					input = fd[0];
-					if (!input)
-						close(input);
-					wait(&status);
-					if (WIFEXITED(status))
-						g_lob.exit_status = WEXITSTATUS(status);
-				}
 			cmd = cmd->next;
+			env = convert_list();
+			continue ;
 		}
-	free_command(cmd);
+		pipe(fd);
+		id = fork();
+		if (id == 0)
+			child_command(cmd, env, fd, input);
+		else
+			wait_chlid(fd, &input);
+		cmd = cmd->next;
+	}
 	return (0);
 }

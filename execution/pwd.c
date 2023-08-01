@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:49:56 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 16:47:31 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/01 00:44:01 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ void	__pwd(t_pcommand_d *cmd)
 {
 	char	*pwd;
 
-	if (redirect(cmd) == -1)
-		return ;
 	pwd = getcwd(NULL, 0);
 	printf("%s\n", pwd);
 	free(pwd);
