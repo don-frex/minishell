@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell3.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylaaross <ylaaross@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 19:14:04 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/08/01 00:07:24 by ylaaross         ###   ########.fr       */
+/*   Updated: 2023/08/01 20:00:47 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ int	detect_quotes2(t_command_d *t)
 	if (!d_quotes && !s_quotes)
 		return (1);
 	g_lob.exit_status = 2;
-	write(2, "minishell: syntax error\n", 24);
 	return (0);
 }
 

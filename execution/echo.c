@@ -6,15 +6,15 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 17:36:29 by asaber            #+#    #+#             */
-/*   Updated: 2023/08/01 00:43:21 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/01 17:01:07 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int forc_check(char *str)
+int	forc_check(char *str)
 {
-	int i;
+	int	i;
 
 	i = 1;
 	while (str[i])

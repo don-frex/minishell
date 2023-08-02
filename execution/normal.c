@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/07 19:28:49 by asaber            #+#    #+#             */
-/*   Updated: 2023/08/01 01:18:24 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/02 00:05:27 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,25 @@ char	**convert_list(void)
 	{
 		tmp_variable = ft_strjoin(env->variable, "=");
 		cp_env[i] = ft_strjoin(tmp_variable, env->value);
+		free(tmp_variable);
 		env = env->next;
 		i++;
 	}
 	cp_env[i] = 0;
 	return (cp_env);
+}
+
+void	free_cpenv(char **env)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+	{
+		free(env[i]);
+		i++;
+	}
+	free(env);
 }
 
 char	*check_command(char **path, char *command)
@@ -66,6 +80,7 @@ void	child_command(t_pcommand_d *cmd, char **env, int *fd, int input)
 	int		check;
 	char	**paths;
 
+	def_signals();
 	paths = ft_split(search_env("PATH"), ':');
 	check = 0;
 	if (!check_builts(cmd->command[0]))
@@ -81,7 +96,7 @@ void	child_command(t_pcommand_d *cmd, char **env, int *fd, int input)
 	if (check == 0)
 	{
 		if (do_execbuiltins(cmd))
-			exit(g_lob.exit_status);
+			exit(0);
 		if (check_command(paths, cmd->command[0]))
 			execve(check_command(paths, cmd->command[0]),
 				cmd->command, env);
@@ -100,33 +115,6 @@ void	wait_chlid(int *fd, int *input)
 	wait(&status);
 	if (WIFEXITED(status))
 		g_lob.exit_status = WEXITSTATUS(status);
-}
-
-int	do_command(t_pcommand_d *cmd)
-{
-	int		id;
-	int		fd[2];
-	char	**env;
-	int		input;
-
-	if (!cmd->command[0])
-		return (0);
-	input = 0;
-	while (cmd)
-	{
-		if (do_builtins(cmd))
-		{
-			cmd = cmd->next;
-			env = convert_list();
-			continue ;
-		}
-		pipe(fd);
-		id = fork();
-		if (id == 0)
-			child_command(cmd, env, fd, input);
-		else
-			wait_chlid(fd, &input);
-		cmd = cmd->next;
-	}
-	return (0);
+	else if (WIFSIGNALED(status))
+		g_lob.exit_status = WTERMSIG(status) + 128;
 }

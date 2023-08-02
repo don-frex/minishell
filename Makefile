@@ -1,27 +1,44 @@
 NAME = minishell
-
 CC = gcc
-
-CFLAGS = -Wall -Wextra -Werror 
+CFLAGS = -Wall -Wextra -Werror
+CSFLAGS = #-I/Users/asaber/.brew/opt/readline/include
+LDFLAGS =# -L/Users/asaber/.brew/opt/readline/lib
 
 LIBFT_DIR = __LIBFT/libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRC = execution/unset.c execution/heardoc.c execution/exit.c execution/cd.c execution/echo.c __LIBFT/ft_strlen.c __ENV/env.c __ENV/linked_data.c execution/pwd.c execution/env.c execution/export.c execution/normal.c execution/check_builtins.c parsing/parse2_utils2.c  parsing/parse2_utils1.c parsing/minishell9.c  parsing/minishell8.c parsing/minishell7.c  parsing/minishell6.c parsing/minishell5.c  parsing/minishell4.c  parsing/minishell3.c parsing/minishell2.c  parsing/minishell1.c  minishell.c   parsing/test_cases.c  parsing/personalised_splites.c parsing/parse2_utils1.c  parsing/parse2_utils.c parsing/parse2_.c parsing/parse2.c parsing/ft_strdup.c parsing/nodes_creation.c gnl/get_next_line.c gnl/get_next_line_utils.c execution/redirection.c
-OBJS = $(SRC:.c=.o)
+SRC_DIRS = execution parsing __ENV __LIBFT
+MAIN_SRC_DIR = .
+
+OBJ_DIR = obj
+MAIN_OBJ_DIR = obj/main
+
+SRC = $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
+MAIN_SRC = $(wildcard $(MAIN_SRC_DIR)/*.c)
+
+OBJ = $(addprefix $(OBJ_DIR)/,$(SRC:.c=.o))
+MAIN_OBJ = $(addprefix $(MAIN_OBJ_DIR)/,$(MAIN_SRC:.c=.o))
+
+$(shell mkdir -p $(OBJ_DIR) $(addprefix $(OBJ_DIR)/,$(SRC_DIRS)) $(MAIN_OBJ_DIR))
 
 RM = rm -rf
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $^ -o $(NAME) -lreadline
-
 $(LIBFT):
 	make -C $(LIBFT_DIR)
 
+$(OBJ_DIR)/%.o: %.c
+	$(CC) $(CFLAGS) $(CSFLAGS) -c $< -o $@
+
+$(MAIN_OBJ_DIR)/%.o: %.c
+	$(CC) $(CFLAGS) $(CSFLAGS) -c $< -o $@
+
+$(NAME): $(OBJ) $(MAIN_OBJ) $(LIBFT)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $(NAME) $(OBJ) $(MAIN_OBJ) -lreadline -L$(LIBFT_DIR) -lft
+
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(OBJ) $(MAIN_OBJ)
 	make -C $(LIBFT_DIR) clean
 
 fclean: clean

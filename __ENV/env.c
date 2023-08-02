@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 19:20:00 by asaber            #+#    #+#             */
-/*   Updated: 2023/08/01 01:07:24 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/01 20:44:29 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	__edit_env(char *var, char *value)
 			}
 			env = env->next;
 		}
-	}	
+	}
 }
 
 void	init_status(t_env *env)
@@ -89,16 +89,19 @@ t_env	*__fill_env(char **env)
 {
 	int		i;
 	t_env	*env_node;
+	char	*first;
+	char	*sec;
 
 	env_node = malloc(sizeof(t_env));
 	env_node->variable = cut_first(env[0]);
-	env_node->value = cut_secound(env[0], cut_first(env[0]));
+	env_node->value = cut_secound(env[0], env_node->variable);
 	env_node->next = NULL;
 	i = 1;
 	while (env[i])
 	{
-		_ft_lstadd_back(&env_node, _ft_lstnew(cut_first(env[i]),
-				cut_secound(env[i], cut_first(env[i]))));
+		first = cut_first(env[i]);
+		sec = cut_secound(env[i], first);
+		_ft_lstadd_back(&env_node, _ft_lstnew(first, sec));
 		i++;
 	}
 	init_status(env_node);

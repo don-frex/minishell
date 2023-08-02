@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 22:21:06 by asaber            #+#    #+#             */
-/*   Updated: 2023/08/01 01:49:07 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/02 01:40:37 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	start_heardoc(int *fd, char *endo, t_file *file)
 		line = readline("> ");
 		if (line)
 		{
-			if (ft_strncmp(endo, line, ft_strlen(endo)+1) == 0)
+			if (ft_strncmp(endo, line, ft_strlen(endo) + 1) == 0)
 				break ;
 			t = 0;
 			split_parse(line, &t);
@@ -63,6 +63,7 @@ void	finded_heardoc(t_file *tmp, int fd[2])
 	{
 		close(fd[0]);
 		start_heardoc(fd, tmp->file_name, tmp);
+		close(fd[1]);
 		exit(0);
 	}
 	else

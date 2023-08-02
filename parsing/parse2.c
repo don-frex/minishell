@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylaaross <ylaaross@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 18:13:10 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/08/01 00:05:03 by ylaaross         ###   ########.fr       */
+/*   Updated: 2023/08/01 22:26:31 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	join_parse_next(t_command_d **t, int *state, char **s)
 	next(t);
 }
 
-void	kk(t_command_d **t, t_pcommand_d *p, int *i)
+void	file_test_case(t_command_d **t, t_pcommand_d *p, int *i)
 {
 	if (*t && !(test2((*t)) && (*t)->state == GENERALE)
 		&& !((*t)->token == SPACE && (*t)->state == GENERALE)

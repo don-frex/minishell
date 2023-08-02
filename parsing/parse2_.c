@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse2_.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylaaross <ylaaross@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/31 23:58:24 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/08/01 00:01:44 by ylaaross         ###   ########.fr       */
+/*   Updated: 2023/08/02 00:48:41 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	parse_127(t_command_d *t, t_pcommand_d *p)
 	{
 		if (double_singlecotes(t))
 			double_singlecotes_inside(&t, p, &i);
-		kk(&t, p, &i);
+		file_test_case(&t, p, &i);
 		if (test2(t) && t->state == GENERALE)
 		{
 			while (test2(t))

@@ -6,13 +6,11 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 17:34:20 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 20:33:57 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/01 20:31:30 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-// g_lob env is a g_lobal variable in this case
 
 int	home_error(t_pcommand_d *cmd)
 {

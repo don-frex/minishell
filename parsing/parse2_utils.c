@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse2_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylaaross <ylaaross@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 22:25:56 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/07/31 22:46:13 by ylaaross         ###   ########.fr       */
+/*   Updated: 2023/08/02 01:14:34 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int	command_number(t_command_d *t)
 	b = 1;
 	while (t)
 	{
-		if (t->token == PIPE)
+		if (t->token == PIPE && t->state == GENERALE)
 			b = 1;
 		else if (t->token != PIPE && b == 1)
 		{

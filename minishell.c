@@ -6,10 +6,15 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/09 16:43:57 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/08/01 01:51:03 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/02 00:02:33 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<readline/readline.h>
+#include<readline/history.h>
 #include "minishell.h"
 
 void	count_cmd(t_pcommand_d	*p)
@@ -39,12 +44,25 @@ void	init_pointers(t_pcommand_d	**tmp, t_pcommand_d	**p)
 
 void	execution_free(t_pcommand_d	*p, t_pcommand_d	*tmp)
 {
-	printf("");
 	if (p && heardoc_check(p->file))
 		do_heardoc(p);
 	if (p)
 		do_command(p);
 	free_cmd_files(tmp);
+}
+
+void	free_env(t_env *env)
+{
+	t_env	*tmp;
+
+	while (env)
+	{
+		tmp = env->next;
+		free(env->variable);
+		free(env->value);
+		free(env);
+		env = tmp;
+	}
 }
 
 int	main(int argc, char *argv[], char *env[])
@@ -57,8 +75,8 @@ int	main(int argc, char *argv[], char *env[])
 
 	(void)argc;
 	(void)argv;
-	g_lob.env = __fill_env(env);
 	var_init_env(&stdin, &stdout, &p);
+	g_lob.env = __fill_env(env);
 	while (1)
 	{
 		init_pointers(&tmp, &p);

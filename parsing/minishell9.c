@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell9.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylaaross <ylaaross@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/30 22:19:37 by ylaaross          #+#    #+#             */
-/*   Updated: 2023/08/01 00:06:27 by ylaaross         ###   ########.fr       */
+/*   Updated: 2023/08/02 00:02:39 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ int	test_cases(t_command_d	*t)
 
 void	var_init_env(int *stdin, int *stdout, t_pcommand_d	**p)
 {
+	signals();
 	*p = 0;
 	*stdin = dup(STDIN_FILENO);
 	*stdout = dup(STDOUT_FILENO);

@@ -6,13 +6,13 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/18 19:00:18 by asaber            #+#    #+#             */
-/*   Updated: 2023/07/31 20:35:00 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/01 20:32:27 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	add_status(t_env *env, int	status)
+void	add_status(t_env *env, int status)
 {
 	while (env->next)
 	{

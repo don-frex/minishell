@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/10 19:14:30 by asaber            #+#    #+#             */
-/*   Updated: 2023/08/01 01:08:33 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/01 17:37:20 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,19 +43,6 @@ t_env	*_ft_lstnew(void *variable, void *value)
 	return (begin);
 }
 
-int	list_len(t_env *env)
-{
-	int	i;
-
-	i = 0;
-	while (env)
-	{
-		i++;
-		env = env->next;
-	}
-	return (i);
-}
-
 char	*search_env(char *var)
 {
 	t_env	*env;
@@ -70,4 +57,17 @@ char	*search_env(char *var)
 		env = env->next;
 	}
 	return (NULL);
+}
+
+int	list_len(t_env *env)
+{
+	int	i;
+
+	i = 0;
+	while (env)
+	{
+		i++;
+		env = env->next;
+	}
+	return (i);
 }

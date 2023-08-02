@@ -1,30 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/17 16:21:35 by asaber            #+#    #+#             */
-/*   Updated: 2023/08/01 17:01:41 by asaber           ###   ########.fr       */
+/*   Created: 2023/08/01 23:59:40 by asaber            #+#    #+#             */
+/*   Updated: 2023/08/02 01:17:12 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	__env(t_env *env)
+void	sig_handler(int sig)
 {
-	if (env == NULL)
-		return ;
-	while (env)
+	if (sig == SIGINT)
 	{
-		if (env->status)
-		{
-			ft_putstr_fd(env->variable, 1);
-			ft_putstr_fd("=", 1);
-			ft_putstr_fd(env->value, 1);
-			ft_putstr_fd("\n", 1);
-		}
-		env = env->next;
+		write (2, "\n", 1);
+		rl_on_new_line();
+		rl_redisplay();
+		// rl_replace_line("", 0);
+		g_lob.exit_status = 1;
 	}
+}
+
+void	signals(void)
+{
+	signal (SIGINT, sig_handler);
+	signal (SIGQUIT, SIG_IGN);
+}
+
+void	def_signals(void)
+{
+	signal (SIGINT, SIG_DFL);
+	signal (SIGQUIT, SIG_DFL);
 }

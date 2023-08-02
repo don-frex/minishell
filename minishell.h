@@ -6,7 +6,7 @@
 /*   By: asaber <asaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/17 20:26:02 by asaber            #+#    #+#             */
-/*   Updated: 2023/08/01 01:42:31 by asaber           ###   ########.fr       */
+/*   Updated: 2023/08/02 00:10:25 by asaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct s_shell
 	int		exit_status;
 }	t_shell;
 
-t_shell	g_lob;
+t_shell		g_lob;
 
 typedef struct command_devide
 {
@@ -63,6 +63,7 @@ typedef struct parsed_command
 	struct parsed_command	*next;
 	t_file					*file;
 }t_pcommand_d;
+
 void		parse_200(t_command_d *t, t_pcommand_d **p, t_pcommand_d **tmp);
 void		parse_127(t_command_d *t, t_pcommand_d *p);
 int			test_cases_parse(t_command_d *t);
@@ -72,7 +73,6 @@ int			test_cases(t_command_d	*t);
 void		read_split(t_command_d	**t);
 void		var_init_env(int *stdin, int *stdout, t_pcommand_d	**p);
 void		do_heardoc(t_pcommand_d *cmd);
-void		expend_parse(t_command_d **t, t_pcommand_d	**p);
 void		free_cmd_files(t_pcommand_d	*p);
 void		free_files(t_pcommand_d	*p);
 void		expend_exit(t_command_d	*t);
@@ -118,7 +118,7 @@ int			count(t_command_d	*t, int search);
 int			ft_strcmp(const char *s1, const char *s2);
 void		pipe_next(t_command_d **t, t_pcommand_d **p, int *i);
 void		state_token(t_command_d **t, int *state, int *token);
-void		kk(t_command_d **t, t_pcommand_d *p, int *i);
+void		file_test_case(t_command_d **t, t_pcommand_d *p, int *i);
 void		join_parse_next(t_command_d **t, int *state, char **s);
 void		skip_files(t_command_d **t);
 void		next(t_command_d **t);
@@ -154,15 +154,23 @@ t_env		*__fill_env(char **env);
 int			test(t_command_d *t);
 int			count_words(t_command_d *t);
 void		fifo_cmd(t_pcommand_d **head);
-void		parse_129(t_command_d *t, t_pcommand_d **p);
 void		parse_200(t_command_d *t, t_pcommand_d **p, t_pcommand_d **tmp);
 void		parse_127(t_command_d *t, t_pcommand_d *p);
 int			command_number(t_command_d *t);
+void		_ft_lstadd_back(t_env **lst, t_env *new);
+t_env		*_ft_lstnew(void *variable, void *value);
+t_env		*__fill_env(char **env);
+char		*cut_secound(char *env, char *first_env);
+char		*cut_first(char *env);
 char		*ft_strdup(char *s1);
 void		fifo(t_command_d **head, char *str, int v);
 t_file		*fifo_file(t_file *head, char *str, int v, int state);
 void		expend_herdock(t_command_d	*t);
 char		*concat_herdock(t_command_d	*t);
+
+# undef SPACE
+# undef TAB
+
 enum e_token
 {
 	WORD = 1,
@@ -191,13 +199,12 @@ size_t		ft_strlen(const char *c);
 t_env		*__fill_env(char **env);
 char		**convert_list(void);
 void		__export(t_pcommand_d *cmd);
-int			do_command(t_pcommand_d *cmd);
+void		do_command(t_pcommand_d *cmd);
 int			check_builts(char *command);
 int			do_builtins(t_pcommand_d *cmd);
 void		__pwd(t_pcommand_d *cmd);
 void		__env(t_env *env);
 void		__unset(t_pcommand_d *cmd);
-char		*get_next_line(int fd);
 void		ft_echo(t_pcommand_d *t);
 void		ft_cd(t_pcommand_d *t);
 char		*search_env(char *var);
@@ -208,9 +215,7 @@ void		rm_node(t_env *env);
 int			isin_env(char *var);
 void		find_rm(int posision);
 void		free_token(t_command_d	*t);
-int			heardoc_check(t_file *files);
-void		do_heardoc(t_pcommand_d *cmd);
-int			command_check(t_pcommand_d *cmd);
+int			heardoc_check(t_file *file);
 int			redirect(t_pcommand_d *cmd);
 void		expend_herdock(t_command_d	*t);
 char		*ft_strjoin_parse(char *s1, char *s2);
@@ -219,8 +224,15 @@ void		split_parse(char *p, t_command_d	**t);
 int			do_execbuiltins(t_pcommand_d *cmd);
 int			command_len(char **command);
 void		export_alone(void);
-int			redirect(t_pcommand_d *cmd);
 int			list_len(t_env *env);
-char		*search_env(char *var);
-
+int			redirect(t_pcommand_d *cmd);
+void		free_impliment(t_pcommand_d **cmd, char	***env);
+void		do_command(t_pcommand_d *cmd);
+void		free_cpenv(char **env);
+void		child_command(t_pcommand_d *cmd, char **env, int *fd, int input);
+void		wait_chlid(int *fd, int *input);
+void		signals(void);
+void		sig_handler(int sig);
+void		signals(void);
+void		def_signals(void);
 #endif
